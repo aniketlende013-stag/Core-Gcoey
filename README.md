@@ -73,13 +73,6 @@ HeritageHub/
 
 ---
 
-## 📸 Screenshots (Placeholder)
-
-![Home Page](prototype.png)
-![AR/VR Demo]()
-
----
-
 ## 🤝 Contributing
 
 We welcome contributions! 🎉
