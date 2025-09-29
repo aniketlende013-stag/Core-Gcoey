@@ -1,0 +1,1122 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>TempleSeek — Unified Places for Temples & Historical Sites</title>
+  <style>
+    :root{--bg:#0f1724;--card:#0b1220;--muted:#94a3b8;--accent:#2563eb;--accent-hover:#1d4ed8}
+    *{box-sizing:border-box}
+    body{font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; margin:0; background:linear-gradient(180deg,#071028 0%, #071b2a 100%); color:#e6eef8; -webkit-font-smoothing:antialiased; min-height:100vh}
+    
+    /* Header */
+    .header{padding:20px 40px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(255,255,255,0.05)}
+    .logo{display:flex;align-items:center;gap:12px}
+    .logo .brand{font-weight:700;font-size:24px;letter-spacing:-1px}
+    .logo .dot{color:var(--accent)}
+    .nav{display:flex;gap:24px}
+    .nav a{color:#e6eef8;text-decoration:none;padding:8px 16px;border-radius:8px;transition:background 0.2s}
+    .nav a:hover{background:rgba(255,255,255,0.05)}
+    .langSelect{background:transparent;border:1px solid rgba(255,255,255,0.1);color:inherit;padding:8px 12px;border-radius:8px}
+    
+    /* Main container - Google style */
+    .mainContainer{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:60vh;padding:40px 20px}
+    .bigLogo{font-weight:700;font-size:72px;letter-spacing:-2px;margin-bottom:40px;text-align:center}
+    .bigLogo .dot{color:var(--accent)}
+    
+    /* Search section */
+    .searchSection{width:100%;max-width:700px;margin-bottom:40px}
+    .searchBox{background:rgba(255,255,255,0.05);padding:20px;border-radius:50px;display:flex;gap:16px;align-items:center;box-shadow:0 8px 32px rgba(0,0,0,0.2);border:1px solid rgba(255,255,255,0.1);transition:all 0.3s ease}
+    .searchBox:focus-within{box-shadow:0 12px 48px rgba(37,99,235,0.15);border-color:var(--accent)}
+    .searchIcon{width:20px;height:20px;opacity:0.6}
+    .searchBox input{flex:1;background:transparent;border:0;outline:none;padding:8px 0;font-size:18px;color:inherit;font-weight:400}
+    .searchBox input::placeholder{color:var(--muted)}
+    .searchBtn{background:var(--accent);border:0;padding:12px 24px;border-radius:25px;color:white;cursor:pointer;font-weight:500;transition:all 0.2s ease;transform:scale(1)}
+    .searchBtn:hover{background:var(--accent-hover);transform:scale(1.02)}
+    .searchBtn:active{transform:scale(0.98)}
+    
+    /* Filter Dropdowns */
+    .filtersContainer{width:100%;max-width:700px;margin-bottom:30px}
+    .filterDropdowns{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+    .filterDropdown{position:relative}
+    .filterDropdownBtn{background:rgba(0,0,0,0.4);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.1);color:#e6eef8;padding:10px 16px;border-radius:25px;cursor:pointer;display:flex;align-items:center;gap:8px;font-size:14px;transition:all 0.2s;position:relative}
+    .filterDropdownBtn:hover{background:rgba(0,0,0,0.5);border-color:rgba(255,255,255,0.2)}
+    .filterDropdownBtn.active{background:rgba(37,99,235,0.2);border-color:var(--accent);backdrop-filter:blur(15px)}
+    .filterClose{background:rgba(255,255,255,0.1);border:none;color:#e6eef8;width:18px;height:18px;border-radius:50%;cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center;margin-left:8px;transition:all 0.2s}
+    .filterClose:hover{background:rgba(255,255,255,0.2)}
+    .filterDropdownMenu{position:absolute;top:100%;left:0;right:0;background:rgba(0,0,0,0.85);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.15);border-radius:12px;margin-top:8px;overflow:hidden;display:none;z-index:100;box-shadow:0 8px 32px rgba(0,0,0,0.4);min-width:160px;max-height:250px;overflow-y:auto}
+    .filterDropdownMenu.show{display:block;animation:dropdownSlide 0.2s ease}
+    @keyframes dropdownSlide{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+    .filterOption{padding:12px 16px;cursor:pointer;transition:all 0.2s;font-size:14px;color:#e6eef8;border-bottom:1px solid rgba(255,255,255,0.05);display:flex;align-items:center;gap:8px}
+    .filterOption:last-child{border-bottom:none}
+    .filterOption:hover{background:rgba(255,255,255,0.08)}
+    .filterOption.selected{background:rgba(37,99,235,0.2);color:var(--accent)}
+    .filterOption.selected::before{content:'✓';color:var(--accent);font-weight:bold}
+    
+    /* Search by Filter button */
+    .searchByFilterBtn{background:rgba(37,99,235,0.1);border:1px solid var(--accent);color:var(--accent);padding:10px 16px;border-radius:25px;cursor:pointer;display:flex;align-items:center;gap:8px;font-size:14px;transition:all 0.2s;margin-right:8px}
+    .searchByFilterBtn:hover{background:rgba(37,99,235,0.2);transform:scale(1.02)}
+    .searchByFilterBtn.active{background:var(--accent);color:white}
+
+    /* Map View link */
+    .mapViewLink{background:rgba(16,185,129,0.1);border:1px solid #10b981;color:#10b981;padding:10px 16px;border-radius:25px;display:flex;align-items:center;gap:8px;font-size:14px;transition:all 0.2s;margin-right:8px;text-decoration:none}
+    .mapViewLink:hover{background:rgba(16,185,129,0.2);transform:scale(1.02);color:#10b981}
+    
+    /* Results */
+    .resultsContainer{width:100%;max-width:1000px;margin:0 auto;padding:0 20px;opacity:0;transform:translateY(20px);transition:all 0.4s ease;display:none}
+    .resultsContainer.show{opacity:1;transform:translateY(0);display:block}
+    .resultsHeader{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;padding:0 4px}
+    .resultsCount{color:var(--muted);font-size:14px}
+    .sortSelect{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:inherit;padding:6px 10px;border-radius:6px;font-size:14px}
+    .results{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:20px;margin-top:20px}
+    .card{background:linear-gradient(135deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));padding:20px;border-radius:16px;border:1px solid rgba(255,255,255,0.05);transition:all 0.3s ease;position:relative;overflow:hidden}
+    .card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),#7c3aed);opacity:0;transition:opacity 0.3s ease}
+    .card:hover{transform:translateY(-4px);box-shadow:0 12px 40px rgba(0,0,0,0.15);border-color:rgba(255,255,255,0.1)}
+    .card:hover::before{opacity:1}
+    .card h3{margin:0 0 8px 0;font-size:18px;font-weight:600}
+    .meta{font-size:13px;color:var(--muted);margin-bottom:12px;display:flex;gap:8px;flex-wrap:wrap}
+    .metaTag{background:rgba(255,255,255,0.05);padding:4px 8px;border-radius:12px;font-size:11px}
+    .popularityBadge{background:linear-gradient(45deg,#f59e0b,#d97706);color:white;padding:2px 6px;border-radius:8px;font-size:10px;font-weight:600}
+    .cardDesc{line-height:1.5;margin-bottom:16px;color:#b8c5d1}
+    .viewBtn{background:transparent;border:1px solid var(--accent);padding:10px 20px;border-radius:25px;color:var(--accent);cursor:pointer;font-weight:500;transition:all 0.2s ease;display:inline-flex;align-items:center;gap:8px;text-decoration:none}
+    .viewBtn:hover{background:var(--accent);color:white;transform:scale(1.02)}
+    .viewBtn:active{transform:scale(0.98)}
+    
+    /* Empty state */
+    .empty{padding:60px 20px;text-align:center;color:var(--muted);font-size:16px}
+    .emptyIcon{font-size:48px;margin-bottom:16px;opacity:0.3}
+    
+    /* Modal */
+    .modalBack{position:fixed;inset:0;background:rgba(2,6,23,0.8);display:none;align-items:center;justify-content:center;padding:20px;z-index:1000;backdrop-filter:blur(4px)}
+    .modal{background:#021029;padding:30px;border-radius:20px;max-width:800px;width:100%;border:1px solid rgba(255,255,255,0.1);box-shadow:0 20px 60px rgba(0,0,0,0.3);position:relative;animation:modalSlide 0.3s ease}
+    @keyframes modalSlide{from{opacity:0;transform:scale(0.9)}to{opacity:1;transform:scale(1)}}
+    .modal .close{position:absolute;top:20px;right:20px;background:rgba(255,255,255,0.1);border:0;color:var(--muted);cursor:pointer;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:all 0.2s}
+    .modal .close:hover{background:rgba(255,255,255,0.2)}
+    .modalRow{display:flex;gap:24px;margin-top:20px}
+    .thumb{width:260px;height:180px;background:linear-gradient(135deg,#0f1724,#021029);border-radius:12px;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:14px}
+    
+    /* Clear filters button */
+    .clearFiltersBtn{background:rgba(239,68,68,0.1);border:1px solid #ef4444;color:#ef4444;padding:8px 14px;border-radius:20px;cursor:pointer;font-size:13px;transition:all 0.2s;margin-left:8px}
+    .clearFiltersBtn:hover{background:rgba(239,68,68,0.2);transform:scale(1.02)}
+    
+    /* Responsive */
+    @media (max-width:768px){
+      .header{padding:15px 20px}
+      .bigLogo{font-size:48px}
+      .searchSection,.filtersContainer{max-width:90%}
+      .modalRow{flex-direction:column}
+      .thumb{width:100%;height:200px}
+      .nav{display:none}
+      .filterDropdowns{justify-content:center}
+    }
+    
+    /* Pulse animation for search button */
+    @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(37,99,235,0.4)}70%{box-shadow:0 0 0 10px rgba(37,99,235,0)}100%{box-shadow:0 0 0 0 rgba(37,99,235,0)}}
+    .searchBtn.pulse{animation:pulse 2s infinite}
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <div class="header">
+    <div class="logo">
+      <div class="brand">Temple<span class="dot">Seek</span></div>
+    </div>
+    <nav class="nav">
+      <a href="#about">About</a>
+      <a href="#explore">Explore</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <div>
+      <select id="langSelect" class="langSelect">
+        <option value="en">English</option>
+        <option value="hi">हिन्दी</option>
+        <option value="mr">मराठी</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="mainContainer">
+    <div class="bigLogo">Temple<span class="dot">Seek</span></div>
+    
+    <div class="searchSection">
+      <div class="searchBox" role="search">
+        <svg class="searchIcon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m21 21-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+        </svg>
+        <input id="q" type="search" placeholder="Search temples, forts, baoris, heritage sites..." aria-label="Search" autocomplete="off" />
+        <button class="searchBtn pulse" id="searchBtn">Search</button>
+      </div>
+    </div>
+    
+    <!-- Filter Dropdowns -->
+    <div class="filtersContainer">
+      <div class="filterDropdowns">
+        <!-- Map View Link -->
+        <a href="d5.html" class="mapViewLink">
+          <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20.247l6-16.5 6 16.5-6-2.25-6 2.25z"></path>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20.247L3 17.997l6-16.5L9 20.247z"></path>
+          </svg>
+          <span>Map View</span>
+        </a>
+
+        <!-- Search by Filter Button -->
+        <button class="searchByFilterBtn" id="searchByFilterBtn">
+          <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path>
+          </svg>
+          <span>Search by Filter</span>
+        </button>
+
+        <!-- State Filter -->
+        <div class="filterDropdown" id="stateDropdown" style="display:none">
+          <button class="filterDropdownBtn active" id="stateBtn">
+            <span>Select State</span>
+            <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+            </svg>
+            <button class="filterClose" data-filter="state">×</button>
+          </button>
+          <div class="filterDropdownMenu" id="stateMenu">
+            <div class="filterOption" data-value="">All States</div>
+            <div class="filterOption" data-value="Andhra Pradesh">Andhra Pradesh</div>
+            <div class="filterOption" data-value="Arunachal Pradesh">Arunachal Pradesh</div>
+            <div class="filterOption" data-value="Assam">Assam</div>
+            <div class="filterOption" data-value="Bihar">Bihar</div>
+            <div class="filterOption" data-value="Chhattisgarh">Chhattisgarh</div>
+            <div class="filterOption" data-value="Goa">Goa</div>
+            <div class="filterOption" data-value="Gujarat">Gujarat</div>
+            <div class="filterOption" data-value="Haryana">Haryana</div>
+            <div class="filterOption" data-value="Himachal Pradesh">Himachal Pradesh</div>
+            <div class="filterOption" data-value="Jharkhand">Jharkhand</div>
+            <div class="filterOption" data-value="Karnataka">Karnataka</div>
+            <div class="filterOption" data-value="Kerala">Kerala</div>
+            <div class="filterOption" data-value="Madhya Pradesh">Madhya Pradesh</div>
+            <div class="filterOption" data-value="Maharashtra">Maharashtra</div>
+            <div class="filterOption" data-value="Manipur">Manipur</div>
+            <div class="filterOption" data-value="Meghalaya">Meghalaya</div>
+            <div class="filterOption" data-value="Mizoram">Mizoram</div>
+            <div class="filterOption" data-value="Nagaland">Nagaland</div>
+            <div class="filterOption" data-value="Odisha">Odisha</div>
+            <div class="filterOption" data-value="Punjab">Punjab</div>
+            <div class="filterOption" data-value="Rajasthan">Rajasthan</div>
+            <div class="filterOption" data-value="Sikkim">Sikkim</div>
+            <div class="filterOption" data-value="Tamil Nadu">Tamil Nadu</div>
+            <div class="filterOption" data-value="Telangana">Telangana</div>
+            <div class="filterOption" data-value="Tripura">Tripura</div>
+            <div class="filterOption" data-value="Uttar Pradesh">Uttar Pradesh</div>
+            <div class="filterOption" data-value="Uttarakhand">Uttarakhand</div>
+            <div class="filterOption" data-value="West Bengal">West Bengal</div>
+            <div class="filterOption" data-value="Delhi">Delhi</div>
+          </div>
+        </div>
+
+        <!-- Type Filter -->
+        <div class="filterDropdown" id="typeDropdown" style="display:none">
+          <button class="filterDropdownBtn active" id="typeBtn">
+            <span>Select Type</span>
+            <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+            </svg>
+            <button class="filterClose" data-filter="type">×</button>
+          </button>
+          <div class="filterDropdownMenu" id="typeMenu">
+            <div class="filterOption" data-value="">All Types</div>
+            <div class="filterOption" data-value="Temple">Temple</div>
+            <div class="filterOption" data-value="Fort">Fort</div>
+            <div class="filterOption" data-value="Baori">Baori</div>
+            <div class="filterOption" data-value="Heritage">Heritage</div>
+            <div class="filterOption" data-value="Historical">Historical</div>
+            <div class="filterOption" data-value="Monastery">Monastery</div>
+            <div class="filterOption" data-value="Palace">Palace</div>
+            <div class="filterOption" data-value="Church">Church</div>
+            <div class="filterOption" data-value="Archaeological">Archaeological</div>
+          </div>
+        </div>
+
+        <!-- Popularity Filter -->
+        <div class="filterDropdown" id="popularityDropdown" style="display:none">
+          <button class="filterDropdownBtn active" id="popularityBtn">
+            <span>Select Popularity</span>
+            <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+            </svg>
+            <button class="filterClose" data-filter="popularity">×</button>
+          </button>
+          <div class="filterDropdownMenu" id="popularityMenu">
+            <div class="filterOption" data-value="">All Popularity</div>
+            <div class="filterOption" data-value="High">High</div>
+            <div class="filterOption" data-value="Medium">Medium</div>
+            <div class="filterOption" data-value="Hidden Gem">Hidden Gem</div>
+          </div>
+        </div>
+
+        <!-- Clear Filters Button -->
+        <button class="clearFiltersBtn" id="clearFiltersBtn" style="display:none">
+          <span>Clear All</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Results Container -->
+  <div class="resultsContainer" id="resultsContainer">
+    <div class="resultsHeader">
+      <div id="resultsCount" class="resultsCount"></div>
+      <select id="sortSelect" class="sortSelect">
+        <option value="name">Sort by Name</option>
+        <option value="popularity">Sort by Popularity</option>
+        <option value="era">Sort by Era</option>
+        <option value="state">Sort by State</option>
+      </select>
+    </div>
+    
+    <div id="results" class="results"></div>
+    <div id="empty" class="empty" style="display:none">
+      <div class="emptyIcon">🏛</div>
+      <div>No places found matching your criteria.</div>
+      <div style="margin-top:8px;font-size:14px">Try adjusting your filters or search terms.</div>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div id="modalBack" class="modalBack">
+    <div class="modal" role="dialog" aria-modal="true">
+      <button class="close" id="modalClose">✕</button>
+      <div id="modalContent"></div>
+    </div>
+  </div>
+
+  <script>
+    // Comprehensive database with all sites
+    const DATA = [
+  // Maharashtra
+  {id:1001,name:'Ellora Caves',type:'Heritage',region:'West',state:'Maharashtra',location:'Ellora, Maharashtra',era:'6th century',popularity:'High',
+   short:'UNESCO World Heritage Site with Kailash Temple.',
+   desc:'UNESCO World Heritage Site with 34 caves representing Buddhist, Hindu, and Jain monuments, featuring the famous Kailash Temple.',
+   link:'ellora.html'},
+  {id:1002,name:'Pandharpur Temple',type:'Temple',region:'West',state:'Maharashtra',location:'Pandharpur, Maharashtra',era:'Ancient',popularity:'High',
+   short:'Famous pilgrimage site dedicated to Lord Vitthal.',
+   desc:'Pandharpur is a major pilgrimage site in Maharashtra, known for the Vitthal Temple and the annual Wari festival.',
+   link:'pandarpur.html'},
+  {id:1003,name:'Raigad Fort',type:'Fort',region:'West',state:'Maharashtra',location:'Raigad, Maharashtra',era:'17th century',popularity:'High',
+   short:'Capital fort of Chhatrapati Shivaji Maharaj.',
+   desc:'17th-century hill fort that served as the capital of the Maratha Empire under Chhatrapati Shivaji Maharaj. Known for its strategic location and historical importance.',
+   link:'raigadfort.html'},
+  {id:1004,name:'Shegaon Temple',type:'Temple',region:'West',state:'Maharashtra',location:'Shegaon, Maharashtra',era:'Modern',popularity:'High',
+   short:'Famous temple of Shri Gajanan Maharaj.',
+   desc:'Shegaon is renowned for the temple of Shri Gajanan Maharaj, attracting devotees from all over India.',
+   link:'shegaon.html'},
+  {id:1005,name:'Siddhivinayak Temple',type:'Temple',region:'West',state:'Maharashtra',location:'Mumbai, Maharashtra',era:'Modern',popularity:'High',
+   short:'Famous Ganesh temple in Mumbai.',
+   desc:'Siddhivinayak Temple is one of the most popular temples in Mumbai, dedicated to Lord Ganesha.',
+   link:'siddivinayak.html'},
+  {id:1006,name:'Konark Sun Temple',type:'Temple',region:'East',state:'Odisha',location:'Konark, Odisha',era:'13th century',popularity:'High',
+   short:'Sun temple built as a chariot with decorated wheels and horses.',
+   desc:'A 13th-century temple dedicated to Surya, built in the form of a gigantic chariot with elaborately carved stone wheels, pillars, and walls. It is a UNESCO World Heritage Site.',
+   link:'suntemple.html'},
+  {id:1007,name:'Trimbakeshwar Temple',type:'Temple',region:'West',state:'Maharashtra',location:'Trimbak, Nashik, Maharashtra',era:'Ancient',popularity:'High',
+   short:'One of the 12 Jyotirlinga temples of Lord Shiva.',
+   desc:'Sacred Hindu temple dedicated to Lord Shiva, located in Trimbak, Nashik. It is one of the twelve Jyotirlingas and a prominent pilgrimage site with religious and historical significance.',
+   link:'trambak.html'},
+      // Andhra Pradesh
+      {id:1,name:'Tirupati Venkateswara Temple',type:'Temple',region:'South',state:'Andhra Pradesh',location:'Tirupati, Andhra Pradesh',era:'Ancient',popularity:'High',
+       short:'One of the richest and most visited temples in the world.',
+       desc:'One of the richest and most visited temples in the world, dedicated to Lord Venkateswara. Located on Tirumala Hills, it attracts millions of pilgrims annually.',
+       link:'tirupati.html'},
+      {id:2,name:'Amaravathi Buddhist Sites',type:'Archaeological',region:'South',state:'Andhra Pradesh',location:'Amaravathi, Andhra Pradesh',era:'3rd century BCE',popularity:'Medium',
+       short:'Ancient Buddhist stupas and monasteries with magnificent sculptures.',
+       desc:'Ancient Buddhist stupas and monasteries dating back to 3rd century BCE, showcasing magnificent sculptures and architectural remains.',
+       link:'amaravathi.html'},
+      {id:3,name:'Hampi-Vijayanagara',type:'Heritage',region:'South',state:'Andhra Pradesh',location:'Hampi, Karnataka',era:'14th century',popularity:'High',
+       short:'UNESCO World Heritage Site of Vijayanagara Empire.',
+       desc:'UNESCO World Heritage Site with ruins of the Vijayanagara Empire, featuring magnificent temples, palaces, and architectural marvels.',
+       link:'hampi.html'},
+      {id:4,name:'Srisailam Temple',type:'Temple',region:'South',state:'Andhra Pradesh',location:'Srisailam, Andhra Pradesh',era:'Ancient',popularity:'High',
+       short:'One of the twelve Jyotirlinga shrines.',
+       desc:'One of the twelve Jyotirlinga shrines dedicated to Lord Shiva, situated on the banks of Krishna River in Nallamala Hills.',
+       link:'srisailam.html'},
+      {id:5,name:'Undavalli Caves',type:'Archaeological',region:'South',state:'Andhra Pradesh',location:'Undavalli, Andhra Pradesh',era:'4th-5th century CE',popularity:'Medium',
+       short:'Rock-cut caves with huge reclining Vishnu statue.',
+       desc:'Rock-cut caves dating from 4th-5th century CE, famous for the huge reclining statue of Lord Vishnu carved from a single granite block.',
+       link:'undavalli.html'},
+      
+      // Arunachal Pradesh
+      {id:6,name:'Tawang Monastery',type:'Monastery',region:'North',state:'Arunachal Pradesh',location:'Tawang, Arunachal Pradesh',era:'17th century',popularity:'High',
+       short:'Largest monastery in India at 10,000 feet altitude.',
+       desc:'Largest monastery in India and second largest in the world, perched at 10,000 feet altitude, housing 450 monks.',
+       link:'tawang.html'},
+      {id:7,name:'Bomdila Monastery',type:'Monastery',region:'North',state:'Arunachal Pradesh',location:'Bomdila, Arunachal Pradesh',era:'Modern',popularity:'Medium',
+       short:'Important Buddhist learning center with Himalayan views.',
+       desc:'Important Buddhist learning center with beautiful Himalayan views, known for its peaceful environment and spiritual significance.',
+       link:'bomdila.html'},
+      
+      // Assam
+      {id:8,name:'Kamakhya Temple',type:'Temple',region:'East',state:'Assam',location:'Guwahati, Assam',era:'Ancient',popularity:'High',
+       short:'One of the 51 Shakti Peethas atop Nilachal Hill.',
+       desc:'One of the 51 Shakti Peethas, this ancient temple dedicated to Goddess Kamakhya is a major pilgrimage site atop Nilachal Hill.',
+       link:'kamakhya.html'},
+      {id:9,name:'Rang Ghar',type:'Historical',region:'East',state:'Assam',location:'Sivasagar, Assam',era:'Ahom period',popularity:'Medium',
+       short:'Asia\'s oldest amphitheater built by Ahom kings.',
+       desc:'Asia\'s oldest amphitheater built by Ahom kings for watching traditional games, showcasing unique Assamese architecture.',
+       link:'rangghar.html'},
+      
+      // Bihar
+      {id:10,name:'Mahabodhi Temple, Bodh Gaya',type:'Temple',region:'East',state:'Bihar',location:'Bodh Gaya, Bihar',era:'Ancient',popularity:'High',
+       short:'UNESCO World Heritage Site where Buddha attained enlightenment.',
+       desc:'UNESCO World Heritage Site where Buddha attained enlightenment under the Bodhi Tree, one of Buddhism\'s holiest places.',
+       link:'bodhgaya.html'},
+      {id:11.5,name:'Nalanda University Ruins',type:'Archaeological',region:'East',state:'Bihar',location:'Nalanda, Bihar',era:'5th century CE',popularity:'High',
+       short:'Ancient international Buddhist university ruins.',
+       desc:'Ancient international Buddhist university and UNESCO World Heritage Site, once the world\'s oldest residential university.',
+       link:'nalanda.html'},
+      
+      // Chhattisgarh
+      {id:12,name:'Bhoramdeo Temple',type:'Temple',region:'Central',state:'Chhattisgarh',location:'Kawardha, Chhattisgarh',era:'11th century',popularity:'Medium',
+       short:'Known as the Khajuraho of Chhattisgarh.',
+       desc:'Known as the \'Khajuraho of Chhattisgarh\', famous for its erotic sculptures and intricate stone carvings from 11th century.',
+       link:'bhoramdeo.html'},
+      
+      // Goa
+      {id:13,name:'Basilica of Bom Jesus',type:'Church',region:'West',state:'Goa',location:'Old Goa, Goa',era:'16th century',popularity:'High',
+       short:'UNESCO World Heritage Site with St. Francis Xavier\'s remains.',
+       desc:'UNESCO World Heritage Site housing the mortal remains of St. Francis Xavier, exemplifying baroque architecture.',
+       link:'bomjesus.html'},
+      {id:14,name:'Se Cathedral',type:'Church',region:'West',state:'Goa',location:'Old Goa, Goa',era:'16th century',popularity:'High',
+       short:'One of Asia\'s largest churches dedicated to St. Catherine.',
+       desc:'One of Asia\'s largest churches dedicated to St. Catherine, famous for its Portuguese colonial architecture and golden bell.',
+       link:'secathedral.html'},
+      
+      // Gujarat
+      {id:15,name:'Somnath Temple',type:'Temple',region:'West',state:'Gujarat',location:'Somnath, Gujarat',era:'Ancient',popularity:'High',
+       short:'First among the twelve Jyotirlinga shrines.',
+       desc:'First among the twelve Jyotirlinga shrines, rebuilt multiple times throughout history, symbol of resilience and faith.',
+       link:'somnath.html'},
+      {id:16,name:'Dwarkadhish Temple',type:'Temple',region:'West',state:'Gujarat',location:'Dwarka, Gujarat',era:'Ancient',popularity:'High',
+       short:'One of Char Dham pilgrimage sites dedicated to Lord Krishna.',
+       desc:'One of Char Dham pilgrimage sites dedicated to Lord Krishna, believed to be built over Krishna\'s ancient palace.',
+       link:'dwarkadhish.html'},
+      {id:17,name:'Rani ki Vav',type:'Baori',region:'West',state:'Gujarat',location:'Patan, Gujarat',era:'11th century',popularity:'High',
+       short:'UNESCO World Heritage Site stepwell with intricate carvings.',
+       desc:'UNESCO World Heritage Site, an intricately carved stepwell from 11th century showcasing Maru-Gurjara architectural style.',
+       link:'ranikivav.html'},
+      {id:18,name:'Sun Temple, Modhera',type:'Temple',region:'West',state:'Gujarat',location:'Modhera, Gujarat',era:'11th century',popularity:'High',
+       short:'Temple dedicated to Sun God with architectural precision.',
+       desc:'11th-century temple dedicated to Sun God, famous for its architectural precision allowing sunlight into sanctum during equinoxes.',
+       link:'modhera.html'},
+       {id:54,name:'Chand Baori',type:'Historical',region:'North',state:'Rajasthan',location:'Abhaneri, Rajasthan',era:'9th century',popularity:'High',
+ short:'Famous stepwell with 3,500 narrow steps.',
+ desc:'Built in the 9th century by King Chanda of the Nikumbha Dynasty, Chand Baori is one of the deepest and largest stepwells in India with 3,500 steps arranged in precise geometry.',
+ link:'chandbaori.html'},
+
+      
+      // Haryana
+      {id:19,name:'Kurukshetra Battlefield',type:'Historical',region:'North',state:'Haryana',location:'Kurukshetra, Haryana',era:'Ancient',popularity:'High',
+       short:'Sacred site of the epic Mahabharata war.',
+       desc:'Sacred site of the epic Mahabharata war, dotted with temples and tanks commemorating the legendary battle.',
+       link:'kurukshetra.html'},
+      {id:20,name:'Brahma Sarovar',type:'Heritage',region:'North',state:'Haryana',location:'Kurukshetra, Haryana',era:'Ancient',popularity:'Medium',
+       short:'Ancient sacred water tank created by Lord Brahma.',
+       desc:'Ancient sacred water tank in Kurukshetra, believed to be created by Lord Brahma, site of ritual bathing during solar eclipses.',
+       link:'brahmasarovar.html'},
+      
+      // Himachal Pradesh
+      {id:21,name:'Hadimba Temple, Manali',type:'Temple',region:'North',state:'Himachal Pradesh',location:'Manali, Himachal Pradesh',era:'16th century',popularity:'High',
+       short:'Ancient wooden temple in cedar forests.',
+       desc:'Ancient wooden temple dedicated to Hadimba Devi, showcasing traditional Himachali architecture amidst cedar forests.',
+       link:'hadimba.html'},
+      {id:22,name:'Kangra Fort',type:'Fort',region:'North',state:'Himachal Pradesh',location:'Kangra, Himachal Pradesh',era:'Medieval',popularity:'Medium',
+       short:'Largest fort in Himalayas with 1000 years of history.',
+       desc:'Largest fort in Himalayas with over 1000 years of history, offering panoramic views of Kangra Valley.',
+       link:'kangrafort.html'},
+      
+      // Jharkhand
+      {id:23,name:'Baidyanath Temple, Deoghar',type:'Temple',region:'East',state:'Jharkhand',location:'Deoghar, Jharkhand',era:'Ancient',popularity:'High',
+       short:'One of the twelve Jyotirlinga shrines.',
+       desc:'One of the twelve Jyotirlinga shrines, major pilgrimage site during Shravan month when thousands of devotees visit.',
+       link:'baidyanath.html'},
+      {id:24,name:'Parasnath Hill',type:'Heritage',region:'East',state:'Jharkhand',location:'Giridih, Jharkhand',era:'Ancient',popularity:'Medium',
+       short:'Important Jain pilgrimage site and highest peak in Jharkhand.',
+       desc:'Highest peak in Jharkhand and important Jain pilgrimage site where 20 out of 24 Jain Tirthankaras attained salvation.',
+       link:'parasnath.html'},
+      
+      // Karnataka
+      {id:25,name:'Hampi Vijayanagara',type:'Heritage',region:'South',state:'Karnataka',location:'Hampi, Karnataka',era:'14th century',popularity:'High',
+       short:'UNESCO World Heritage Site of Vijayanagara Empire.',
+       desc:'UNESCO World Heritage Site with magnificent ruins of Vijayanagara Empire, showcasing 14th-16th century South Indian architecture.',
+       link:'chariot.html'},
+      {id:26,name:'Mysore Palace',type:'Palace',region:'South',state:'Karnataka',location:'Mysore, Karnataka',era:'19th century',popularity:'High',
+       short:'Opulent Indo-Saracenic palace of Wodeyar dynasty.',
+       desc:'Opulent Indo-Saracenic palace of Wodeyar dynasty, famous for its architecture and spectacular Dasara celebrations.',
+       link:'mysorepalace.html'},
+      {id:27,name:'Hoysaleswara Temple, Halebid',type:'Temple',region:'South',state:'Karnataka',location:'Halebid, Karnataka',era:'12th century',popularity:'High',
+       short:'Masterpiece of Hoysala architecture with intricate carvings.',
+       desc:'12th-century Hoysala architecture masterpiece with intricate stone carvings depicting mythological scenes and celestial figures.',
+       link:'hoysaleswara.html'},
+      
+      // Kerala
+      {id:28,name:'Padmanabhaswamy Temple',type:'Temple',region:'South',state:'Kerala',location:'Thiruvananthapuram, Kerala',era:'Ancient',popularity:'High',
+       short:'Ancient temple and one of the richest temples in the world.',
+       desc:'Ancient temple dedicated to Lord Vishnu, famous for its Dravidian architecture and as one of the richest temples in the world.',
+       link:'padmanabhaswamy.html'},
+      {id:29,name:'Mattancherry Palace',type:'Palace',region:'South',state:'Kerala',location:'Kochi, Kerala',era:'16th century',popularity:'Medium',
+       short:'Portuguese palace with beautiful Kerala murals.',
+       desc:'Portuguese palace gifted to Kochi Raja, featuring beautiful Kerala murals depicting Hindu mythological themes.',
+       link:'mattancherry.html'},
+      
+      // Madhya Pradesh
+      {id:30,name:'Khajuraho Temples',type:'Heritage',region:'Central',state:'Madhya Pradesh',location:'Khajuraho, Madhya Pradesh',era:'10th century',popularity:'High',
+       short:'Famous for erotic sculptures and outstanding temple architecture.',
+       desc:'UNESCO World Heritage Site famous for erotic sculptures and outstanding temple architecture from Chandela dynasty (950-1150 CE).',
+       link:'khajuraho.html'},
+      {id:31,name:'Sanchi Stupa',type:'Archaeological',region:'Central',state:'Madhya Pradesh',location:'Sanchi, Madhya Pradesh',era:'3rd century BCE',popularity:'High',
+       short:'UNESCO World Heritage Site with ancient Buddhist monuments.',
+       desc:'UNESCO World Heritage Site with ancient Buddhist monuments dating from 3rd century BCE, showcasing Buddhist art and architecture.',
+       link:'sanchi.html'},
+      {id:32,name:'Gwalior Fort',type:'Fort',region:'Central',state:'Madhya Pradesh',location:'Gwalior, Madhya Pradesh',era:'8th century',popularity:'High',
+       short:'Magnificent hilltop fort called Gibraltar of India.',
+       desc:'Magnificent hilltop fort called \'Gibraltar of India\', showcasing various architectural styles from 8th-19th centuries.',
+       link:'gwaliorfort.html'},
+      
+      // Maharashtra
+      {id:33,name:'Shirdi Sai Baba Temple',type:'Temple',region:'West',state:'Maharashtra',location:'Shirdi, Maharashtra',era:'20th century',popularity:'High',
+       short:'Most visited pilgrimage site dedicated to Sai Baba.',
+       desc:'One of the most visited pilgrimage sites in India, dedicated to Sai Baba. This sacred temple attracts millions of devotees annually.',
+       link:'shirdi.html'},
+       {id:1011,name:'Shegaon Temple (Shri Gajanan Maharaj)',type:'Temple',region:'West',state:'Maharashtra',location:'Shegaon, Maharashtra',era:'Modern',popularity:'High',
+ shortDesc:'Famous temple dedicated to Shri Gajanan Maharaj, revered saint of Maharashtra.',
+ desc:'One of the most visited pilgrimage sites in Maharashtra, dedicated to Shri Gajanan Maharaj, known for spirituality, community service, and Annakshetra (free meal service).',
+ link:'shegaon.html'},
+      {id:36,name:'Kailash Temple',type:'Temple',region:'West',state:'Maharashtra',location:'Ellora, Maharashtra',era:'8th century',popularity:'High',
+       short:'Largest monolithic rock excavation in the world.',
+       desc:'Carved from a single rock, this temple represents Mount Kailash, the abode of Lord Shiva, and is an architectural marvel.',
+       link:'kailash.html'},
+
+{id:51,name:'Shaniwar Wada',type:'Historical',region:'West',state:'Maharashtra',location:'Pune, Maharashtra',era:'18th century',popularity:'High',
+ short:'Grand fortification built by the Peshwas.',
+ desc:'Historic 18th-century palace fortification in Pune, built as the seat of the Peshwas of the Maratha Empire. Famous for its massive gates and architectural grandeur.',
+ link:'shaniwarwada.html'},
+
+{id:52,name:'Gateway of India',type:'Historical',region:'West',state:'Maharashtra',location:'Mumbai, Maharashtra',era:'20th century',popularity:'High',
+ short:'Iconic arch-monument facing the Arabian Sea.',
+ desc:'Built in 1924 to commemorate the visit of King George V and Queen Mary, the Gateway of India is one of Mumbai’s most iconic landmarks overlooking the Arabian Sea.',
+ link:'gatewayofindia.html'},
+
+      
+      // Odisha
+      {id:37,name:'Sun Temple',type:'Temple',region:'East',state:'Odisha',location:'Konark, Odisha',era:'13th century',popularity:'High',
+       short:'Sun temple built as a chariot with decorated wheels and horses.',
+       desc:'A 13th-century temple dedicated to Surya, built in the form of a gigantic chariot with elaborately carved stone wheels, pillars, and walls. It is a UNESCO World Heritage Site.',
+       link:'sun-temple.html'},
+      {id:38,name:'Jagannath Temple, Puri',type:'Temple',region:'East',state:'Odisha',location:'Puri, Odisha',era:'12th century',popularity:'High',
+       short:'One of Char Dham pilgrimage sites famous for Rath Yatra.',
+       desc:'One of Char Dham pilgrimage sites famous for annual Rath Yatra festival, dedicated to Lord Jagannath with unique traditions.',
+       link:'jagannath.html'},
+      {id:39,name:'Lingaraj Temple, Bhubaneswar',type:'Temple',region:'East',state:'Odisha',location:'Bhubaneswar, Odisha',era:'11th century',popularity:'High',
+       short:'Largest temple in Bhubaneswar dedicated to Lord Shiva.',
+       desc:'Largest temple in Bhubaneswar dedicated to Lord Shiva, representing Kalinga architecture with 55-meter tall main tower.',
+       link:'lingaraj.html'},
+      
+      // Punjab
+      {id:40,name:'Golden Temple, Amritsar',type:'Temple',region:'North',state:'Punjab',location:'Amritsar, Punjab',era:'16th century',popularity:'High',
+       short:'Holiest shrine of Sikhism with gold-plated architecture.',
+       desc:'Holiest shrine of Sikhism with gold-plated architecture, famous for langar (community kitchen) serving thousands daily.',
+       link:'goldentemple.html'},
+      {id:41,name:'Jallianwala Bagh',type:'Historical',region:'North',state:'Punjab',location:'Amritsar, Punjab',era:'20th century',popularity:'High',
+       short:'Memorial garden commemorating 1919 massacre.',
+       desc:'Memorial garden commemorating 1919 massacre, preserved as national monument with bullet marks and memorial structures.',
+       link:'jallianwala.html'},
+      
+      // Rajasthan
+      {id:42,name:'Amber Fort',type:'Fort',region:'North',state:'Rajasthan',location:'Jaipur, Rajasthan',era:'16th century',popularity:'High',
+       short:'Magnificent hilltop fort with stunning architecture.',
+       desc:'Built by Raja Man Singh I, this fort is known for its artistic style elements, blending both Hindu and Rajput elements.',
+       link:'amber-fort.html'},
+      {id:43,name:'Chand Baori',type:'Baori',region:'North',state:'Rajasthan',location:'Abhaneri, Rajasthan',era:'9th century',popularity:'Medium',
+       short:'One of the deepest and largest stepwells in India.',
+       desc:'This geometrically stunning stepwell has 3,500 narrow steps arranged in perfect symmetry, descending 13 stories.',
+       link:'chand.html'},
+      {id:44,name:'Mehrangarh Fort, Jodhpur',type:'Fort',region:'North',state:'Rajasthan',location:'Jodhpur, Rajasthan',era:'15th century',popularity:'High',
+       short:'One of India\'s largest forts above Blue City.',
+       desc:'One of India\'s largest forts perched 400 feet above Blue City, showcasing Rajput military architecture and museums.',
+       link:'mehrangarh.html'},
+      {id:45,name:'Hawa Mahal, Jaipur',type:'Palace',region:'North',state:'Rajasthan',location:'Jaipur, Rajasthan',era:'18th century',popularity:'High',
+       short:'Palace of Winds with 953 windows.',
+       desc:'Iconic Palace of Winds with 953 windows built for royal women to observe street festivals while maintaining purdah.',
+       link:'hawamahal.html'},
+      
+      // Tamil Nadu
+      {id:46,name:'Meenakshi Temple',type:'Temple',region:'South',state:'Tamil Nadu',location:'Madurai, Tamil Nadu',era:'6th century',popularity:'High',
+       short:'Dravidian temple complex famous for colorful gopurams.',
+       desc:'Dedicated to Meenakshi and Sundareswarar with towering gopurams and intricate sculptures, representing the pinnacle of South Indian architecture.',
+       link:'meenakshi.html'},
+      {id:47,name:'Brihadeeswarar Temple, Thanjavur',type:'Temple',region:'South',state:'Tamil Nadu',location:'Thanjavur, Tamil Nadu',era:'11th century',popularity:'High',
+       short:'UNESCO World Heritage Site built by Raja Raja Chola I.',
+       desc:'UNESCO World Heritage Site built by Raja Raja Chola I in 1010 CE, masterpiece of Dravidian architecture with 66-meter tower.',
+       link:'brihadeeswarar.html'},
+      {id:48,name:'Shore Temple, Mahabalipuram',type:'Temple',region:'South',state:'Tamil Nadu',location:'Mahabalipuram, Tamil Nadu',era:'8th century',popularity:'High',
+       short:'UNESCO World Heritage Site facing Bay of Bengal.',
+       desc:'UNESCO World Heritage Site from 8th century facing Bay of Bengal, one of India\'s oldest stone temples by Pallava dynasty.',
+       link:'shore.html'},
+      
+      // Telangana
+      {id:49,name:'Charminar, Hyderabad',type:'Historical',region:'South',state:'Telangana',location:'Hyderabad, Telangana',era:'16th century',popularity:'High',
+       short:'Iconic monument and mosque built by Quli Qutb Shah.',
+       desc:'Iconic 16th-century monument and mosque built by Quli Qutb Shah, symbol of Hyderabad with Indo-Islamic architecture.',
+       link:'charminar.html'},
+      {id:50,name:'Golkonda Fort',type:'Fort',region:'South',state:'Telangana',location:'Hyderabad, Telangana',era:'13th century',popularity:'Medium',
+       short:'Famous for its acoustics and diamond trade history.',
+       desc:'Known for its ingenious water supply system and the famous clapping hands acoustic effect at the entrance.',
+       link:'golkonda.html'},
+      {id:51,name:'Ramappa Temple, Warangal',type:'Temple',region:'South',state:'Telangana',location:'Warangal, Telangana',era:'13th century',popularity:'High',
+       short:'UNESCO World Heritage Site showcasing Kakatiya architecture.',
+       desc:'UNESCO World Heritage Site built in 13th century, showcasing Kakatiya architecture with floating bricks and intricate sculptures.',
+       link:'ramappa.html'},
+      
+      // Uttar Pradesh
+      {id:52,name:'Taj Mahal, Agra',type:'Heritage',region:'North',state:'Uttar Pradesh',location:'Agra, Uttar Pradesh',era:'17th century',popularity:'High',
+       short:'UNESCO World Heritage Site and Wonder of the World.',
+       desc:'UNESCO World Heritage Site and Wonder of the World, marble mausoleum built by Shah Jahan as symbol of eternal love.',
+       link:'tajmahal.html'},
+      {id:53,name:'Varanasi Ghats',type:'Heritage',region:'North',state:'Uttar Pradesh',location:'Varanasi, Uttar Pradesh',era:'Ancient',popularity:'High',
+       short:'Ancient spiritual city with 88 ghats along Ganges.',
+       desc:'Ancient spiritual city with 88 ghats along Ganges River, oldest living city and major pilgrimage destination for Hindus.',
+       link:'varanasi.html'},
+      {id:54,name:'Fatehpur Sikri',type:'Heritage',region:'North',state:'Uttar Pradesh',location:'Fatehpur Sikri, Uttar Pradesh',era:'16th century',popularity:'High',
+       short:'UNESCO World Heritage Site, abandoned Mughal city by Akbar.',
+       desc:'UNESCO World Heritage Site, abandoned Mughal city built by Akbar showcasing Indo-Islamic architecture and planned urban design.',
+       link:'fatehpursikri.html'},
+      
+      // Uttarakhand
+      {id:55,name:'Kedarnath Temple',type:'Temple',region:'North',state:'Uttarakhand',location:'Kedarnath, Uttarakhand',era:'Ancient',popularity:'High',
+       short:'One of twelve Jyotirlinga shrines at 3,583 meters altitude.',
+       desc:'One of twelve Jyotirlinga shrines at 3,583 meters altitude, important pilgrimage site accessible only during summer months.',
+       link:'kedarnath.html'},
+      {id:56,name:'Badrinath Temple',type:'Temple',region:'North',state:'Uttarakhand',location:'Badrinath, Uttarakhand',era:'Ancient',popularity:'High',
+       short:'One of Char Dham pilgrimage sites in Garhwal Himalayas.',
+       desc:'One of Char Dham pilgrimage sites dedicated to Lord Vishnu, situated in Garhwal Himalayas with stunning mountain backdrop.',
+       link:'badrinath.html'},
+      
+      // West Bengal
+      {id:57,name:'Victoria Memorial, Kolkata',type:'Historical',region:'East',state:'West Bengal',location:'Kolkata, West Bengal',era:'20th century',popularity:'High',
+       short:'Iconic marble monument dedicated to Queen Victoria.',
+       desc:'Iconic marble monument dedicated to Queen Victoria, now museum showcasing colonial history and British Raj artifacts.',
+       link:'victoria.html'},
+      {id:58,name:'Terracotta Temples',type:'Temple',region:'East',state:'West Bengal',location:'Bishnupur, West Bengal',era:'17th century',popularity:'Hidden Gem',
+       short:'Brick temples with exquisite terracotta artwork.',
+       desc:'Famous for Rasmancha and Jor Bangla temples showcasing Bengal\'s rich terracotta art tradition.',
+       link:'terracotta.html'},
+      {id:59,name:'Dakshineswar Kali Temple',type:'Temple',region:'East',state:'West Bengal',location:'Kolkata, West Bengal',era:'19th century',popularity:'High',
+       short:'Temple where Sri Ramakrishna practiced and preached.',
+       desc:'Temple where Sri Ramakrishna practiced and preached, dedicated to Goddess Kali with beautiful riverside location and architecture.',
+       link:'dakshineswar.html'},
+      
+      // Delhi
+      {id:60,name:'Red Fort',type:'Fort',region:'North',state:'Delhi',location:'Delhi',era:'17th century',popularity:'High',
+       short:'Mughal fortified palace and UNESCO World Heritage Site.',
+       desc:'Built by Shah Jahan, this red sandstone fort served as the main residence of the Mughal emperors for nearly 200 years.',
+       link:'red-fort.html'},
+      {id:61,name:'Agrasen ki Baoli',type:'Baori',region:'North',state:'Delhi',location:'Delhi',era:'14th century',popularity:'Hidden Gem',
+       short:'Historic stepwell in the heart of Delhi.',
+       desc:'A protected monument believed to be built by the legendary king Agrasen, featuring 108 steps.',
+       link:'agrasen-baoli.html'}
+    ];
+
+    const qEl=document.getElementById('q');
+    const resultsEl=document.getElementById('results');
+    const resultsContainer=document.getElementById('resultsContainer');
+    const resultsCount=document.getElementById('resultsCount');
+    const emptyEl=document.getElementById('empty');
+    const modalBack=document.getElementById('modalBack');
+    const modalContent=document.getElementById('modalContent');
+    const modalClose=document.getElementById('modalClose');
+    const sortSelect=document.getElementById('sortSelect');
+    const searchBtn=document.getElementById('searchBtn');
+    
+    // Filter dropdown elements
+    const searchByFilterBtn=document.getElementById('searchByFilterBtn');
+    const stateDropdown=document.getElementById('stateDropdown');
+    const typeDropdown=document.getElementById('typeDropdown');
+    const popularityDropdown=document.getElementById('popularityDropdown');
+    const clearFiltersBtn=document.getElementById('clearFiltersBtn');
+    
+    const stateBtn=document.getElementById('stateBtn');
+    const typeBtn=document.getElementById('typeBtn');
+    const popularityBtn=document.getElementById('popularityBtn');
+    const stateMenu=document.getElementById('stateMenu');
+    const typeMenu=document.getElementById('typeMenu');
+    const popularityMenu=document.getElementById('popularityMenu');
+
+    let currentFilters = {
+      type: '',
+      popularity: '',
+      state: ''
+    };
+
+    let activeDropdown = null;
+    let filtersVisible = false;
+
+    // Show/Hide filter dropdowns
+    searchByFilterBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      filtersVisible = !filtersVisible;
+      
+      if (filtersVisible) {
+        searchByFilterBtn.classList.add('active');
+        stateDropdown.style.display = 'block';
+        typeDropdown.style.display = 'block';
+        popularityDropdown.style.display = 'block';
+        updateClearButtonVisibility();
+      } else {
+        searchByFilterBtn.classList.remove('active');
+        stateDropdown.style.display = 'none';
+        typeDropdown.style.display = 'none';
+        popularityDropdown.style.display = 'none';
+        clearFiltersBtn.style.display = 'none';
+        closeAllMenus();
+      }
+    });
+
+    // Update clear button visibility
+    function updateClearButtonVisibility() {
+      const hasActiveFilters = currentFilters.state || currentFilters.type || currentFilters.popularity;
+      if (filtersVisible && hasActiveFilters) {
+        clearFiltersBtn.style.display = 'block';
+      } else {
+        clearFiltersBtn.style.display = 'none';
+      }
+    }
+
+    // Clear all filters
+    clearFiltersBtn.addEventListener('click', () => {
+      currentFilters = { type: '', popularity: '', state: '' };
+      
+      // Reset button texts
+      stateBtn.querySelector('span').textContent = 'Select State';
+      typeBtn.querySelector('span').textContent = 'Select Type';
+      popularityBtn.querySelector('span').textContent = 'Select Popularity';
+      
+      // Clear selected states
+      document.querySelectorAll('.filterOption').forEach(opt => opt.classList.remove('selected'));
+      
+      clearFiltersBtn.style.display = 'none';
+      search();
+    });
+
+    // Toggle dropdown menus
+    function toggleDropdown(menu) {
+      document.querySelectorAll('.filterDropdownMenu').forEach(m => {
+        if (m !== menu) {
+          m.classList.remove('show');
+        }
+      });
+      
+      if (activeDropdown === menu) {
+        menu.classList.remove('show');
+        activeDropdown = null;
+      } else {
+        menu.classList.add('show');
+        activeDropdown = menu;
+      }
+    }
+
+    function closeAllMenus() {
+      document.querySelectorAll('.filterDropdownMenu').forEach(m => {
+        m.classList.remove('show');
+      });
+      activeDropdown = null;
+    }
+
+    // Close dropdowns when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.filterDropdown') && !e.target.closest('.searchByFilterBtn')) {
+        closeAllMenus();
+      }
+    });
+
+    // State dropdown
+    stateBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      toggleDropdown(stateMenu);
+    });
+
+    stateMenu.addEventListener('click', (e) => {
+      const option = e.target.closest('.filterOption');
+      if (!option) return;
+      
+      stateMenu.querySelectorAll('.filterOption').forEach(opt => opt.classList.remove('selected'));
+      option.classList.add('selected');
+      
+      currentFilters.state = option.dataset.value;
+      stateBtn.querySelector('span').textContent = option.textContent;
+      
+      stateMenu.classList.remove('show');
+      activeDropdown = null;
+      updateClearButtonVisibility();
+      search();
+    });
+
+    // Type dropdown
+    typeBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      toggleDropdown(typeMenu);
+    });
+
+    typeMenu.addEventListener('click', (e) => {
+      const option = e.target.closest('.filterOption');
+      if (!option) return;
+      
+      typeMenu.querySelectorAll('.filterOption').forEach(opt => opt.classList.remove('selected'));
+      option.classList.add('selected');
+      
+      currentFilters.type = option.dataset.value;
+      typeBtn.querySelector('span').textContent = option.textContent;
+      
+      typeMenu.classList.remove('show');
+      activeDropdown = null;
+      updateClearButtonVisibility();
+      search();
+    });
+
+    // Popularity dropdown
+    popularityBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      toggleDropdown(popularityMenu);
+    });
+
+    popularityMenu.addEventListener('click', (e) => {
+      const option = e.target.closest('.filterOption');
+      if (!option) return;
+      
+      popularityMenu.querySelectorAll('.filterOption').forEach(opt => opt.classList.remove('selected'));
+      option.classList.add('selected');
+      
+      currentFilters.popularity = option.dataset.value;
+      popularityBtn.querySelector('span').textContent = option.textContent;
+      
+      popularityMenu.classList.remove('show');
+      activeDropdown = null;
+      updateClearButtonVisibility();
+      search();
+    });
+
+    // Close filter buttons
+    document.addEventListener('click', (e) => {
+      const closeBtn = e.target.closest('.filterClose');
+      if (!closeBtn) return;
+      
+      const filterType = closeBtn.dataset.filter;
+      
+      if (filterType === 'state') {
+        stateDropdown.style.display = 'none';
+        currentFilters.state = '';
+        stateBtn.querySelector('span').textContent = 'Select State';
+        stateMenu.querySelectorAll('.filterOption').forEach(opt => opt.classList.remove('selected'));
+      } else if (filterType === 'type') {
+        typeDropdown.style.display = 'none';
+        currentFilters.type = '';
+        typeBtn.querySelector('span').textContent = 'Select Type';
+        typeMenu.querySelectorAll('.filterOption').forEach(opt => opt.classList.remove('selected'));
+      } else if (filterType === 'popularity') {
+        popularityDropdown.style.display = 'none';
+        currentFilters.popularity = '';
+        popularityBtn.querySelector('span').textContent = 'Select Popularity';
+        popularityMenu.querySelectorAll('.filterOption').forEach(opt => opt.classList.remove('selected'));
+      }
+      
+      // Check if all filters are hidden
+      if (stateDropdown.style.display === 'none' && 
+          typeDropdown.style.display === 'none' && 
+          popularityDropdown.style.display === 'none') {
+        filtersVisible = false;
+        searchByFilterBtn.classList.remove('active');
+      }
+      
+      updateClearButtonVisibility();
+      search();
+      e.stopPropagation();
+    });
+
+    function renderResults(list, query = ''){
+      resultsEl.innerHTML='';
+        resultsCount.textContent = `${list.length} results found`;
+      
+      if(!list.length){ 
+        emptyEl.style.display='block';
+        resultsContainer.classList.add('show');
+        return;
+      }
+      emptyEl.style.display='none';
+      resultsContainer.classList.add('show');
+      
+      list.forEach(it => {
+        const popularityBadge = it.popularity === 'High'
+          ? '<span class="popularityBadge">Popular</span>'
+          : it.popularity === 'Hidden Gem'
+          ? '<span class="popularityBadge" style="background:linear-gradient(45deg,#10b981,#059669)">Hidden Gem</span>'
+          : '';
+
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+          <h3>${it.name}</h3>
+          <div class="meta">
+            <span class="metaTag">${it.location}</span>
+            <span class="metaTag">${it.era}</span>
+            <span class="metaTag">${it.type}</span>
+            ${popularityBadge}
+          </div>
+          <div class="cardDesc">${it.desc}</div>
+          <a class="viewBtn" href="${it.link}" target="_blank" rel="noopener">
+            <span>View Details</span>
+            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+            </svg>
+          </a>
+        `;
+        resultsEl.appendChild(card);
+      });
+    }
+
+    function sortResults(results, sortBy) {
+      switch(sortBy) {
+        case 'popularity':
+          const popOrder = { 'High': 3, 'Medium': 2, 'Hidden Gem': 1 };
+          return results.sort((a, b) => (popOrder[b.popularity] || 0) - (popOrder[a.popularity] || 0));
+        case 'era':
+          return results.sort((a, b) => a.era.localeCompare(b.era));
+        case 'state':
+          return results.sort((a, b) => a.state.localeCompare(b.state));
+        default:
+          return results.sort((a, b) => a.name.localeCompare(b.name));
+      }
+    }
+
+    function search(){
+      const q=qEl.value.trim().toLowerCase();
+      let res=DATA.filter(d=>{
+        if(currentFilters.type && d.type!==currentFilters.type) return false;
+        if(currentFilters.popularity && d.popularity!==currentFilters.popularity) return false;
+        if(currentFilters.state && d.state!==currentFilters.state) return false;
+        if(!q) return true;
+        return (d.name+d.short+d.desc+d.location+d.era+d.type).toLowerCase().includes(q);
+      });
+      
+      res = sortResults(res, sortSelect.value);
+      renderResults(res, q);
+      searchBtn.classList.remove('pulse');
+    }
+
+    function showModal(r){
+      const popularityBadge = r.popularity === 'High' ? 
+        '<span class="popularityBadge">Popular</span>' : 
+        r.popularity === 'Hidden Gem' ? 
+        '<span class="popularityBadge" style="background:linear-gradient(45deg,#10b981,#059669)">Hidden Gem</span>' : 
+        `<span class="metaTag">${r.popularity}</span>`;
+
+      modalContent.innerHTML = `
+        <h2 style="margin:0 0 16px 0; font-size:28px">${r.name}</h2>
+        <div class="modalRow">
+          <div class="thumb">${r.type} Image</div>
+          <div style="flex:1">
+            <div class="meta" style="margin-bottom:16px">
+              <span class="metaTag">${r.location}</span>
+              <span class="metaTag">${r.era}</span>
+              <span class="metaTag">${r.type}</span>
+              ${popularityBadge}
+            </div>
+            <p style="line-height:1.6;color:#b8c5d1;font-size:16px">${r.desc}</p>
+          </div>
+        <a href="d5.html" class="mapViewLink">
+          ...
+          <span>Map View</span>
+        </a>        </div>
+      `;
+      modalBack.style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal(){
+      modalBack.style.display='none';
+      document.body.style.overflow='auto';
+    }
+
+    // Event listeners
+    resultsEl.addEventListener('click',e=>{
+      const btn=e.target.closest('.viewBtn');
+      if(!btn) return;
+      const id=Number(btn.dataset.id);
+      const record=DATA.find(d=>d.id===id);
+      showModal(record);
+    });
+
+    modalClose.addEventListener('click',closeModal);
+    modalBack.addEventListener('click',e=>{if(e.target===modalBack) closeModal();});
+
+    // Sort functionality
+    sortSelect.addEventListener('change', search);
+
+    searchBtn.addEventListener('click',search);
+    qEl.addEventListener('keydown',(e)=>{if(e.key==='Enter')search();});
+
+    // Focus effects
+    qEl.addEventListener('focus',()=>{
+      searchBtn.classList.remove('pulse');
+    });
+
+    // Language functionality
+    const langSelect = document.getElementById('langSelect');
+    const translations = {
+      en: {
+        search: 'Search',
+        searchByFilter: 'Search by Filter',
+        mapView: 'Map View',
+        selectState: 'Select State',
+        selectType: 'Select Type',  
+        selectPopularity: 'Select Popularity',
+        allStates: 'All States',
+        allTypes: 'All Types',
+        allPopularity: 'All Popularity',
+        clearAll: 'Clear All',
+        sortByName: 'Sort by Name',
+        sortByPopularity: 'Sort by Popularity',
+        sortByEra: 'Sort by Era',
+        sortByState: 'Sort by State',
+        resultsFound: 'results found',
+        noResults: 'No places found matching your criteria.',
+        tryAdjusting: 'Try adjusting your filters or search terms.',
+        viewDetails: 'View Details'
+      },
+      hi: {
+        search: 'खोजें',
+        searchByFilter: 'फ़िल्टर से खोजें',
+        mapView: 'मैप व्यू',
+        selectState: 'राज्य चुनें',
+        selectType: 'प्रकार चुनें',
+        selectPopularity: 'लोकप्रियता चुनें',
+        allStates: 'सभी राज्य',
+        allTypes: 'सभी प्रकार',
+        allPopularity: 'सभी लोकप्रियता',
+        clearAll: 'सभी साफ़ करें',
+        sortByName: 'नाम के अनुसार क्रमबद्ध करें',
+        sortByPopularity: 'लोकप्रियता के अनुसार',
+        sortByEra: 'युग के अनुसार',
+        sortByState: 'राज्य के अनुसार',
+        resultsFound: 'परिणाम मिले',
+        noResults: 'आपके मानदंडों से कोई स्थान नहीं मिला।',
+        tryAdjusting: 'अपने फ़िल्टर या खोज शब्दों को समायोजित करने का प्रयास करें।',
+        viewDetails: 'विवरण देखें'
+      },
+      mr: {
+        search: 'शोधा',
+        searchByFilter: 'फिल्टरने शोधा',
+        mapView: 'नकाशा दृश्य',
+        selectState: 'राज्य निवडा',
+        selectType: 'प्रकार निवडा',
+        selectPopularity: 'लोकप्रियता निवडा',
+        allStates: 'सर्व राज्ये',
+        allTypes: 'सर्व प्रकार',
+        allPopularity: 'सर्व लोकप्रियता',
+        clearAll: 'सर्व साफ करा',
+        sortByName: 'नावानुसार क्रमवारी लावा',
+        sortByPopularity: 'लोकप्रियतेनुसार',
+        sortByEra: 'कालानुसार',
+        sortByState: 'राज्यानुसार',
+        resultsFound: 'परिणाम सापडले',
+        noResults: 'तुमच्या निकषांशी जुळणारी ठिकाणे सापडली नाहीत.',
+        tryAdjusting: 'तुमचे फिल्टर किंवा शोध शब्द समायोजित करण्याचा प्रयत्न करा.',
+        viewDetails: 'तपशील पहा'
+      }
+    };
+
+    let currentLang = translations.en;
+
+    langSelect.addEventListener('change', () => {
+      const selectedLang = langSelect.value;
+      currentLang = translations[selectedLang];
+      
+      // Update UI text
+      searchBtn.textContent = currentLang.search;
+      searchByFilterBtn.querySelector('span').textContent = currentLang.searchByFilter;
+      document.querySelector('.mapViewLink span').textContent = currentLang.mapView;
+      clearFiltersBtn.querySelector('span').textContent = currentLang.clearAll;
+      
+      // Update button texts if not customized
+      if (stateBtn.querySelector('span').textContent === 'Select State' || 
+          stateBtn.querySelector('span').textContent === 'राज्य चुनें' || 
+          stateBtn.querySelector('span').textContent === 'राज्य निवडा') {
+        stateBtn.querySelector('span').textContent = currentLang.selectState;
+      }
+      
+      if (typeBtn.querySelector('span').textContent === 'Select Type' || 
+          typeBtn.querySelector('span').textContent === 'प्रकार चुनें' || 
+          typeBtn.querySelector('span').textContent === 'प्रकार निवडा') {
+        typeBtn.querySelector('span').textContent = currentLang.selectType;
+      }
+      
+      if (popularityBtn.querySelector('span').textContent === 'Select Popularity' || 
+          popularityBtn.querySelector('span').textContent === 'लोकप्रियता चुनें' || 
+          popularityBtn.querySelector('span').textContent === 'लोकप्रियता निवडा') {
+        popularityBtn.querySelector('span').textContent = currentLang.selectPopularity;
+      }
+      
+      // Update dropdown options
+      sortSelect.options[0].textContent = currentLang.sortByName;
+      sortSelect.options[1].textContent = currentLang.sortByPopularity;
+      sortSelect.options[2].textContent = currentLang.sortByEra;
+      sortSelect.options[3].textContent = currentLang.sortByState;
+      
+      // Update placeholder
+      qEl.placeholder = selectedLang === 'hi' ? 'मंदिर, किले, बावड़ी, धरोहर स्थल खोजें...' : 
+                       selectedLang === 'mr' ? 'मंदिरे, किल्ले, बावड्या, वारसा स्थळे शोधा...' : 
+                       'Search temples, forts, baoris, heritage sites...';
+      
+      // Refresh results if any are shown
+      if (resultsContainer.classList.contains('show')) {
+        search();
+      }
+    });
+
+    // Auto-search functionality
+    let searchTimeout;
+    qEl.addEventListener('input', () => {
+      clearTimeout(searchTimeout);
+      searchTimeout = setTimeout(() => {
+        if (qEl.value.trim().length > 0) {
+          search();
+        }
+      }, 500);
+    });
+
+    // Escape key to close modals
+    document.addEventListener('keydown',(e)=>{
+      if(e.key==='Escape'){
+        if(modalBack.style.display==='flex'){
+          closeModal();
+        } else {
+          closeAllMenus();
+        }
+      }
+    });
+
+    // Auto-search when filters are applied
+    function autoSearch() {
+      const hasQuery = qEl.value.trim().length > 0;
+      const hasFilters = currentFilters.state || currentFilters.type || currentFilters.popularity;
+      
+      if (hasQuery || hasFilters) {
+        search();
+      }
+    }
+
+    // Trigger search when filters are applied
+    setInterval(() => {
+      if (filtersVisible && (currentFilters.state || currentFilters.type || currentFilters.popularity)) {
+        updateClearButtonVisibility();
+      }
+    }, 1000);
+
+  </script>
+</body>
+</html>

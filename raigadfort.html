@@ -1,0 +1,880 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Raigad Fort, Maharashtra</title>
+  <style>
+    :root {
+      --bg: #0f1724;
+      --card: #0b1220;
+      --muted: #94a3b8;
+      --accent: #2563eb;
+      --header-bg: #1e40af;
+      --radius: 16px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+      background: var(--bg);
+      color: #e6eef8;
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.6;
+    }
+    .container {
+      width: 100vw;
+      margin: 0;
+      padding: 0;
+    }
+    header, section, footer {
+      width: 80%;
+      margin-left: auto;
+      margin-right: auto;
+      box-sizing: border-box;
+    }
+    @media (max-width: 900px) {
+      header, section, footer {
+        width: 98%;
+      }
+    }
+    header {
+      background: linear-gradient(135deg, var(--header-bg), #3b82f6);
+      text-align: center;
+      padding: 40px 20px;
+      border-radius: 0 0 20px 20px;
+      box-shadow: 0 8px 32px rgba(30, 64, 175, 0.3);
+      margin-bottom: 40px;
+    }
+    header h1 {
+      font-size: 60px;
+      font-weight: 700;
+      letter-spacing: -1px;
+      color: white;
+    }
+    header h1 span {
+      color: #fbbf24;
+    }
+    nav {
+      margin-top: 18px;
+    }
+    nav a {
+      margin: 0 12px;
+      color: #e6eef8;
+      text-decoration: none;
+      font-size: 18px;
+      transition: color 0.3s ease;
+      padding: 8px 16px;
+      border-radius: 8px;
+    }
+    nav a:hover {
+      color: #fbbf24;
+      background: rgba(255, 255, 255, 0.1);
+    }
+    section {
+      background: var(--card);
+      padding: 28px;
+      border-radius: var(--radius);
+      margin-bottom: 32px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+    }
+    section h2 {
+      font-size: 28px;
+      margin-bottom: 12px;
+      color: var(--accent);
+    }
+    section p {
+      font-size: 18px;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+    .slideshow-container {
+      width: 100%;
+      max-width: 100%;
+      margin: 0 auto 18px auto;
+      position: relative;
+      overflow: hidden;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+      background: #222;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      aspect-ratio: unset;
+      height: auto;
+    }
+    .slides {
+      width: 100%;
+      min-height: 0;
+      height: auto;
+      max-height: 500px;
+      object-fit: contain;
+      display: none;
+      border-radius: 12px;
+    }
+    .slides.active {
+      display: block;
+    }
+    @media (max-width: 900px) {
+      .slideshow-container {
+        height: auto;
+      }
+      .slides {
+        max-height: 260px;
+      }
+    }
+    .slide-indicators {
+      text-align: center;
+      margin-top: 15px;
+    }
+    .dot {
+      cursor: pointer;
+      height: 12px;
+      width: 12px;
+      margin: 0 5px;
+      background-color: #334155;
+      border-radius: 50%;
+      display: inline-block;
+      transition: background-color 0.3s ease;
+    }
+    .dot.active, .dot:hover {
+      background-color: var(--accent);
+    }
+    .gallery-scroll-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      margin-top: 12px;
+      margin-bottom: 18px;
+    }
+    .gallery-btn {
+      background: var(--card);
+      color: var(--accent);
+      border: none;
+      border-radius: 50%;
+      width: 38px;
+      height: 38px;
+      font-size: 22px;
+      cursor: pointer;
+      margin: 0 8px;
+      box-shadow: 0 2px 8px 0 rgba(37,99,235,0.09);
+      transition: background 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .gallery-btn:hover {
+      background: #1746a2;
+      color: #fff;
+    }
+    .gallery {
+      overflow-x: auto;
+      white-space: nowrap;
+      padding-bottom: 8px;
+      scroll-behavior: smooth;
+      width: 100%;
+      max-width: 100%;
+    }
+    .gallery img {
+      display: inline-block;
+      width: 320px;
+      height: 220px;
+      object-fit: cover;
+      border-radius: var(--radius);
+      margin-right: 18px;
+      transition: transform 0.3s;
+      vertical-align: middle;
+    }
+    .gallery img:last-child {
+      margin-right: 0;
+    }
+    .facts ul {
+      list-style: none;
+      width: 100%;
+      max-width: 100%;
+      text-align: left;
+      padding: 0;
+      font-size: 18px;
+    }
+    .facts li {
+      background: rgba(255,255,255,0.07);
+      margin: 12px 0;
+      padding: 18px;
+      border-radius: var(--radius);
+      width: 100%;
+      box-sizing: border-box;
+      display: block;
+    }
+    .structures-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      margin-top: 20px;
+    }
+    .structure-card {
+      background: linear-gradient(135deg, #1e293b, #334155);
+      padding: 20px;
+      border-radius: 12px;
+      border-left: 4px solid var(--accent);
+      transition: transform 0.3s ease;
+      margin-bottom: 8px;
+    }
+    .structure-card:hover {
+      transform: translateY(-2px);
+    }
+    .structure-card h3 {
+      color: #fbbf24;
+      font-size: 18px;
+      margin-bottom: 8px;
+    }
+    .structure-card .structure-desc {
+      font-style: italic;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 16px;
+      margin-top: 16px;
+    }
+    .info-card {
+      background: rgba(255,255,255,0.05);
+      padding: 16px;
+      border-radius: var(--radius);
+      border-left: 3px solid #fbbf24;
+    }
+    .info-card h4 {
+      color: #fbbf24;
+      margin-bottom: 8px;
+      font-size: 16px;
+    }
+    .view-more-container {
+      text-align: center;
+      margin-top: 20px;
+    }
+    .view-more-btn {
+      background: linear-gradient(135deg, var(--accent), #3b82f6);
+      color: white;
+      padding: 10px 24px;
+      border: none;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+    }
+    .view-more-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4);
+    }
+    .reviews-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      margin-top: 20px;
+    }
+    .review-card {
+      background: linear-gradient(135deg, #1e293b, #334155);
+      padding: 20px;
+      border-radius: 12px;
+      border-left: 4px solid var(--accent);
+      transition: transform 0.3s ease;
+      margin-bottom: 8px;
+    }
+    .review-card:hover {
+      transform: translateY(-2px);
+    }
+    .review-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .review-card h3 {
+      color: #fbbf24;
+      font-size: 18px;
+      margin: 0;
+    }
+    .rating {
+      display: flex;
+      align-items: center;
+    }
+    .stars {
+      color: #fbbf24;
+      font-size: 16px;
+      margin-right: 8px;
+    }
+    .rating-num {
+      color: #fbbf24;
+      font-weight: 500;
+      font-size: 14px;
+    }
+    .review-card .review-text {
+      font-style: italic;
+      color: var(--muted);
+      margin-bottom: 12px;
+      line-height: 1.6;
+    }
+    .review-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 14px;
+    }
+    .review-author {
+      color: var(--accent);
+      font-weight: 500;
+    }
+    .review-date {
+      color: #64748b;
+    }
+    .share-review-form {
+      background: linear-gradient(135deg, #1e293b, #0f172a);
+      padding: 24px;
+      border-radius: 16px;
+      margin-top: 20px;
+      border: 1px solid #334155;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .form-group {
+      margin-bottom: 16px;
+      text-align: left;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--accent);
+      font-weight: 500;
+    }
+    .form-group input, .form-group textarea, .form-group select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      background: #0f172a;
+      color: #e6eef8;
+      font-size: 16px;
+      transition: border-color 0.3s ease;
+    }
+    .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    @media (max-width: 600px) {
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+    }
+    .submit-btn {
+      background: linear-gradient(135deg, var(--accent), #3b82f6);
+      color: white;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 500;
+      transition: transform 0.2s ease;
+      width: 100%;
+    }
+    .submit-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+    }
+    .overall-rating {
+      background: rgba(255,255,255,0.05);
+      padding: 20px;
+      border-radius: var(--radius);
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    .overall-rating h3 {
+      color: #fbbf24;
+      font-size: 24px;
+      margin-bottom: 8px;
+    }
+    .overall-stars {
+      font-size: 32px;
+      color: #fbbf24;
+      margin-bottom: 8px;
+    }
+    .overall-text {
+      color: var(--muted);
+      font-size: 16px;
+    }
+    footer {
+      text-align: center;
+      padding: 20px;
+      color: var(--muted);
+      font-size: 15px;
+      margin-top: 20px;
+    }
+    footer span {
+      color: var(--accent);
+    }
+    @media (max-width: 900px) {
+      header h1 {
+        font-size: 36px;
+      }
+      .slideshow-container {
+        aspect-ratio: 16/9;
+      }
+      .gallery img {
+        width: 180px;
+        height: 120px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Raigad <span>Fort</span></h1>
+      <nav>
+        <a href="#about">About</a>
+        <a href="#gallery">Gallery</a>
+        <a href="#history">History</a>
+        <a href="#architecture">Architecture</a>
+        <a href="#visit">Visit Info</a>
+        <a href="#reviews">Reviews</a>
+      </nav>
+    </header>
+
+    <section id="about">
+      <h2>About Raigad Fort</h2>
+      <p>
+        Raigad Fort is situated in the Sahyadri mountain range near Mahad in Maharashtra. It is a historic hill fort 
+        known for its strategic importance and architecture. Once the capital of the Maratha Empire under 
+        Chhatrapati Shivaji Maharaj, it represents Maratha valor and resilience.
+      </p>
+      <div class="slideshow-container">
+        <img class="slides active" src="https://tse4.mm.bing.net/th/id/OIP.3UG3EL-KB4iSDgOT-Ho-VgHaFE?rs=1&pid=ImgDetMain&o=7&rm=3" alt="Raigad Fort Overview">
+        <img class="slides" src="https://tse2.mm.bing.net/th/id/OIP.LZuxnwaEjrqiEnnoA5YUXwAAAA?pid=ImgDet&w=205&h=240&c=7&dpr=1.3&o=7&rm=3" alt="Fort Entrance">
+        <img class="slides" src="https://th.bing.com/th/id/OIP.c3kXi5MQb0TsVxeg_EV7-AHaEK?w=223&h=150&c=6&o=7&dpr=1.3&pid=1.7&rm=3" alt="Mountain View">
+        <img class="slides" src="https://th.bing.com/th/id/OIP.BskFGrtAay0YV9NGPfZfNgHaE5?w=272&h=180&c=7&r=0&o=7&dpr=1.3&pid=1.7&rm=3" alt="Fort Structures">
+        <img class="slides" src="https://th.bing.com/th/id/OIP.2Qmf69Ufg8qTmvE-JntKCAHaFj?w=239&h=180&c=7&r=0&o=7&dpr=1.3&pid=1.7&rm=3" alt="Historical Ruins">
+        <img class="slides" src="https://th.bing.com/th/id/OIP.TbcYxZ9Oqyxz5OF94uAh9wHaE5?w=266&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7" alt="Scenic Beauty">
+      </div>
+      <div class="slide-indicators">
+        <span class="dot active" onclick="currentSlide(1)"></span>
+        <span class="dot" onclick="currentSlide(2)"></span>
+        <span class="dot" onclick="currentSlide(3)"></span>
+        <span class="dot" onclick="currentSlide(4)"></span>
+        <span class="dot" onclick="currentSlide(5)"></span>
+        <span class="dot" onclick="currentSlide(6)"></span>
+      </div>
+    </section>
+
+    <section id="gallery">
+      <h2>Gallery</h2>
+      <p>Explore the majestic architecture and breathtaking views of Raigad Fort, the capital of the great Maratha Empire.</p>
+      <div class="gallery-scroll-container">
+        <button class="gallery-btn" id="galleryLeft" aria-label="Scroll left">&#8592;</button>
+        <div class="gallery" id="galleryScroll">
+          <img src="https://tse4.mm.bing.net/th/id/OIP.3UG3EL-KB4iSDgOT-Ho-VgHaFE?rs=1&pid=ImgDetMain&o=7&rm=3" alt="Raigad Fort Overview">
+          <img src="https://tse2.mm.bing.net/th/id/OIP.LZuxnwaEjrqiEnnoA5YUXwAAAA?pid=ImgDet&w=205&h=240&c=7&dpr=1.3&o=7&rm=3" alt="Fort Entrance">
+          <img src="https://th.bing.com/th/id/OIP.c3kXi5MQb0TsVxeg_EV7-AHaEK?w=223&h=150&c=6&o=7&dpr=1.3&pid=1.7&rm=3" alt="Mountain View">
+          <img src="https://th.bing.com/th/id/OIP.BskFGrtAay0YV9NGPfZfNgHaE5?w=272&h=180&c=7&r=0&o=7&dpr=1.3&pid=1.7&rm=3" alt="Fort Structures">
+          <img src="https://th.bing.com/th/id/OIP.2Qmf69Ufg8qTmvE-JntKCAHaFj?w=239&h=180&c=7&r=0&o=7&dpr=1.3&pid=1.7&rm=3" alt="Historical Ruins">
+          <img src="https://th.bing.com/th/id/OIP.TbcYxZ9Oqyxz5OF94uAh9wHaE5?w=266&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7" alt="Scenic Beauty">
+        </div>
+        <button class="gallery-btn" id="galleryRight" aria-label="Scroll right">&#8594;</button>
+      </div>
+      <div class="view-more-container">
+        <button class="view-more-btn" onclick="viewMoreGallery()">View More</button>
+      </div>
+    </section>
+
+    <section id="facts" class="facts">
+      <h2>Key Facts</h2>
+      <ul>
+        <li><strong>Elevation:</strong> About 1,356 meters above sea level</li>
+        <li><strong>Original Name:</strong> Rairi</li>
+        <li><strong>Trek:</strong> 1,737 steps to reach the fort summit</li>
+        <li><strong>Ropeway:</strong> Available for convenient access with scenic views</li>
+        <li><strong>Capital Period:</strong> Maratha Empire capital from 1674</li>
+        <li><strong>Best Time to Visit:</strong> August to mid-October</li>
+      </ul>
+    </section>
+
+    <section id="history">
+      <h2>Historical Significance</h2>
+      <div class="content-preview" id="history-content">
+        <p>
+          Originally known as Rairi, the fort was captured by Chhatrapati Shivaji Maharaj in 1656 from Chandrarao More of Jawali. 
+          He renovated it into a stronghold and in 1674 made Raigad the capital of his empire.
+        </p>
+        <div class="hidden-content" style="display: none;">
+          <p>
+            <strong>Coronations at Raigad:</strong> Three historic coronations took place here - Chhatrapati Shivaji Maharaj in 1674, 
+            his son Sambhaji Maharaj in 1681, and his younger son Rajaram Maharaj in 1689.
+          </p>
+          <p>
+            <strong>British Era:</strong> After 1818, the British took control of the fort, and it gradually lost its strategic importance. 
+            However, its historical significance as the birthplace of the Maratha Empire remains undiminished.
+          </p>
+          <p>
+            <strong>Recent Discoveries:</strong> An astrolabe dating back to 1597 was found near Kushavarta Lake. This copper-bronze 
+            instrument has Sanskrit inscriptions and animal engravings, highlighting the advanced scientific knowledge of Shivaji Maharaj's era.
+          </p>
+          <p>
+            The fort stands as a testament to Maratha engineering prowess and strategic vision, representing the glorious chapter 
+            of Indian history when indigenous rulers successfully challenged foreign dominance.
+          </p>
+        </div>
+      </div>
+      <div class="view-more-container">
+        <button class="view-more-btn" onclick="toggleContent('history')">View More</button>
+      </div>
+    </section>
+
+    <section id="architecture">
+      <h2>Architectural Highlights</h2>
+      <p>Raigad Fort showcases excellent Maratha architecture built using basalt, granite, and lime mortar.</p>
+      <div class="structures-grid">
+        <div class="structure-card">
+          <h3>Maha Darwaja</h3>
+          <p class="structure-desc">The main entrance with two massive bastions that served as the primary gateway to the fort.</p>
+        </div>
+        <div class="structure-card">
+          <h3>Nagarkhana</h3>
+          <p class="structure-desc">The drum house where royal announcements were made to inform the people of important events.</p>
+        </div>
+        <div class="structure-card">
+          <h3>Rajwada</h3>
+          <p class="structure-desc">The royal palace complex built in traditional Maratha architectural style for the royal family.</p>
+        </div>
+        <div class="structure-card">
+          <h3>Jagdishwar Temple</h3>
+          <p class="structure-desc">A beautiful Shiva temple built in the distinctive Hemadpanthi architectural style.</p>
+        </div>
+        <div class="structure-card">
+          <h3>Ganga Sagar Lake</h3>
+          <p class="structure-desc">A rock-hewn water tank that was used in coronation rituals and ceremonies.</p>
+        </div>
+        <div class="structure-card">
+          <h3>Hirakani Buruj</h3>
+          <p class="structure-desc">A bastion named after Hirakani, a woman who scaled the dangerous cliffs to reach her child.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="visit">
+      <h2>Visiting Information</h2>
+      <div class="content-preview" id="visit-content">
+        <p>
+          Raigad Fort is accessible by both trekking and ropeway. The fort offers stunning panoramic views of the 
+          Sahyadri mountain ranges and is a must-visit destination for history enthusiasts and adventure seekers.
+        </p>
+        <div class="info-grid">
+          <div class="info-card">
+            <h4>🚶‍♂️ Trekking Route</h4>
+            <p>Climb approximately 1,737 steps to reach the fort summit. The trek is moderately challenging and takes about 2-3 hours.</p>
+          </div>
+          <div class="info-card">
+            <h4>🚡 Ropeway</h4>
+            <p>A convenient ropeway service is available for those who prefer a comfortable ascent with scenic aerial views.</p>
+          </div>
+          <div class="info-card">
+            <h4>🏨 Accommodation</h4>
+            <p>Stay options are available in Mahad town, which serves as the base for visiting Raigad Fort.</p>
+          </div>
+          <div class="info-card">
+            <h4>🌤️ Best Time</h4>
+            <p>August to mid-October when the surroundings are lush green and weather is pleasant for trekking.</p>
+          </div>
+        </div>
+        <div class="hidden-content" style="display: none;">
+          <p>
+            <strong>How to Reach:</strong> The fort is located near Mahad in Raigad district. Mahad is well-connected by road 
+            from Mumbai (approximately 170 km) and Pune (approximately 120 km). Regular bus services are available.
+          </p>
+          <p>
+            <strong>Entry Timings:</strong> The fort is open from 9:00 AM to 6:00 PM. It's advisable to start early 
+            to avoid crowds and have ample time to explore.
+          </p>
+          <p>
+            <strong>Entry Fee:</strong> Nominal entry fee for Indians and higher fee for foreign nationals. 
+            Ropeway has separate charges.
+          </p>
+          <p>
+            <strong>What to Carry:</strong> Water bottles, comfortable trekking shoes, hat or cap, camera, 
+            and light snacks. The trek can be demanding, so proper preparation is essential.
+          </p>
+          <p>
+            <strong>Nearby Attractions:</strong> Rajgad Fort (another prominent Maratha fort), Kondhane Buddhist Caves 
+            (ancient rock-cut caves), and various trekking trails in the Sahyadri range.
+          </p>
+        </div>
+      </div>
+      <div class="view-more-container">
+        <button class="view-more-btn" onclick="toggleContent('visit')">View More</button>
+      </div>
+    </section>
+
+    <section id="reviews">
+      <h2>Visitor Reviews</h2>
+      <p>Read what fellow travelers and history enthusiasts have to say about their experience at Raigad Fort.</p>
+      
+      <div class="overall-rating">
+        <h3>4.6/5</h3>
+        <div class="overall-stars">★★★★★</div>
+        <p class="overall-text">Based on 1,247 reviews from visitors worldwide</p>
+      </div>
+
+      <div class="reviews-grid">
+        <div class="review-card">
+          <div class="review-header">
+            <h3>Amazing Historical Experience</h3>
+            <div class="rating">
+              <span class="stars">★★★★★</span>
+              <span class="rating-num">5.0</span>
+            </div>
+          </div>
+          <p class="review-text">"The trek to Raigad Fort was absolutely worth it! The historical significance of this place is incredible. Standing where Chhatrapati Shivaji Maharaj was crowned gave me goosebumps. The ropeway is convenient, but I recommend the trek for the full experience."</p>
+          <div class="review-meta">
+            <span class="review-author">Arjun Deshmukh</span>
+            <span class="review-date">March 2024</span>
+          </div>
+        </div>
+
+        <div class="review-card">
+          <div class="review-header">
+            <h3>Breathtaking Views</h3>
+            <div class="rating">
+              <span class="stars">★★★★★</span>
+              <span class="rating-num">5.0</span>
+            </div>
+          </div>
+          <p class="review-text">"The panoramic views from the top are absolutely stunning! The Sahyadri mountains stretch as far as the eye can see. The ruins are well-preserved and each structure tells a story. Perfect for photography enthusiasts."</p>
+          <div class="review-meta">
+            <span class="review-author">Priya Sharma, Mumbai</span>
+            <span class="review-date">February 2024</span>
+          </div>
+        </div>
+
+        <div class="review-card">
+          <div class="review-header">
+            <h3>Great for Families</h3>
+            <div class="rating">
+              <span class="stars">★★★★☆</span>
+              <span class="rating-num">4.0</span>
+            </div>
+          </div>
+          <p class="review-text">"Visited with my family including elderly parents. The ropeway made it accessible for them. The fort is well-maintained and has adequate facilities. Kids loved learning about Maratha history here. Only complaint - gets crowded on weekends."</p>
+          <div class="review-meta">
+            <span class="review-author">Rahul Patil, Pune</span>
+            <span class="review-date">January 2024</span>
+          </div>
+        </div>
+
+        <div class="review-card">
+          <div class="review-header">
+            <h3>Trekker's Paradise</h3>
+            <div class="rating">
+              <span class="stars">★★★★★</span>
+              <span class="rating-num">5.0</span>
+            </div>
+          </div>
+          <p class="review-text">"For adventure seekers, this is a must-visit! The 1,737 steps are challenging but rewarding. The monsoon season makes it even more beautiful with lush greenery all around. Carry enough water and start early."</p>
+          <div class="review-meta">
+            <span class="review-author">Sneha Kulkarni, Nashik</span>
+            <span class="review-date">August 2023</span>
+          </div>
+        </div>
+
+        <div class="review-card">
+          <div class="review-header">
+            <h3>Rich Cultural Heritage</h3>
+            <div class="rating">
+              <span class="stars">★★★★★</span>
+              <span class="rating-num">5.0</span>
+            </div>
+          </div>
+          <p class="review-text">"As a history student, this place exceeded my expectations. The Jagdishwar Temple, Ganga Sagar Lake, and the royal palace ruins are fascinating. The recent astrolabe discovery adds to its archaeological importance."</p>
+          <div class="review-meta">
+            <span class="review-author">Dr. Anita Joshi, Historian</span>
+            <span class="review-date">December 2023</span>
+          </div>
+        </div>
+
+        <div class="review-card">
+          <div class="review-header">
+            <h3>Peaceful and Inspiring</h3>
+            <div class="rating">
+              <span class="stars">★★★★☆</span>
+              <span class="rating-num">4.5</span>
+            </div>
+          </div>
+          <p class="review-text">"Early morning visit was magical - peaceful atmosphere, cool breeze, and spectacular sunrise views. The spiritual energy of this place is palpable. Could use better signage explaining historical significance of different structures."</p>
+          <div class="review-meta">
+            <span class="review-author">Vikram Singh, Delhi</span>
+            <span class="review-date">November 2023</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="view-more-container">
+        <button class="view-more-btn" onclick="viewMoreReviews()">View More Reviews</button>
+      </div>
+
+      <div class="share-review-form">
+        <h3 style="color: #fbbf24; margin-bottom: 16px; text-align: center;">Share Your Review</h3>
+        <form id="reviewForm">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="reviewerName">Your Name</label>
+              <input type="text" id="reviewerName" name="reviewerName" placeholder="Enter your full name" required>
+            </div>
+            <div class="form-group">
+              <label for="reviewerCity">City</label>
+              <input type="text" id="reviewerCity" name="reviewerCity" placeholder="Your city" required>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="visitDate">Visit Date</label>
+              <input type="month" id="visitDate" name="visitDate" required>
+            </div>
+            <div class="form-group">
+              <label for="rating">Rating</label>
+              <select id="rating" name="rating" required>
+                <option value="">Select Rating</option>
+                <option value="5">★★★★★ Excellent (5)</option>
+                <option value="4">★★★★☆ Very Good (4)</option>
+                <option value="3">★★★☆☆ Good (3)</option>
+                <option value="2">★★☆☆☆ Fair (2)</option>
+                <option value="1">★☆☆☆☆ Poor (1)</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="reviewTitle">Review Title</label>
+            <input type="text" id="reviewTitle" name="reviewTitle" placeholder="Give your review a title" required>
+          </div>
+          <div class="form-group">
+            <label for="reviewText">Your Review</label>
+            <textarea id="reviewText" name="reviewText" rows="5" placeholder="Share your experience visiting Raigad Fort - what did you like most? Any tips for future visitors?" required></textarea>
+          </div>
+          <button type="submit" class="submit-btn">Submit Review</button>
+        </form>
+      </div>
+    </section>
+
+    <footer>
+      © 2025 <span>Raigad Fort Heritage</span> — All Rights Reserved.
+    </footer>
+  </div>
+  <script>
+    // Slideshow
+    let slideIndex = 0;
+    const slides = document.querySelectorAll('.slides');
+    const dots = document.querySelectorAll('.dot');
+    function showSlide(index) {
+      slides.forEach(slide => slide.classList.remove('active'));
+      dots.forEach(dot => dot.classList.remove('active'));
+      slides[index].classList.add('active');
+      dots[index].classList.add('active');
+    }
+    function nextSlide() {
+      slideIndex = (slideIndex + 1) % slides.length;
+      showSlide(slideIndex);
+    }
+    function currentSlide(index) {
+      slideIndex = index - 1;
+      showSlide(slideIndex);
+    }
+    setInterval(nextSlide, 4000);
+
+    // Gallery scroll buttons
+    document.getElementById('galleryLeft').onclick = function() {
+      document.getElementById('galleryScroll').scrollBy({left: -340, behavior: 'smooth'});
+    };
+    document.getElementById('galleryRight').onclick = function() {
+      document.getElementById('galleryScroll').scrollBy({left: 340, behavior: 'smooth'});
+    };
+
+    // View More functionality
+    function toggleContent(section) {
+      const content = document.getElementById(section + '-content');
+      const hiddenContent = content.querySelector('.hidden-content');
+      const button = content.parentElement.querySelector('.view-more-btn');
+      if (hiddenContent.style.display === 'none' || hiddenContent.style.display === '') {
+        hiddenContent.style.display = 'block';
+        button.textContent = 'View Less';
+      } else {
+        hiddenContent.style.display = 'none';
+        button.textContent = 'View More';
+      }
+    }
+    function viewMoreGallery() {
+      alert('More gallery images coming soon! Visit Raigad Fort to experience the historical grandeur in person.');
+    }
+    function viewMoreReviews() {
+      const reviewsGrid = document.querySelector('.reviews-grid');
+      const additionalReviews = [
+        {
+          title: "Photography Heaven",
+          rating: "5.0",
+          stars: "★★★★★",
+          text: "Perfect spot for landscape and heritage photography. The golden hour shots from the fort are incredible. Drone photography is restricted, so plan accordingly.",
+          author: "Karan Mehta, Photographer",
+          date: "October 2023"
+        },
+        {
+          title: "Educational Trip",
+          rating: "4.5",
+          stars: "★★★★☆",
+          text: "Brought my school students here for a history lesson. They were fascinated by the stories of Shivaji Maharaj. Well-organized visit with good facilities.",
+          author: "Mrs. Sunita Rao, Teacher",
+          date: "September 2023"
+        }
+      ];
+      additionalReviews.forEach(review => {
+        const reviewCard = document.createElement('div');
+        reviewCard.className = 'review-card';
+        reviewCard.innerHTML = `
+          <div class="review-header">
+            <h3>${review.title}</h3>
+            <div class="rating">
+              <span class="stars">${review.stars}</span>
+              <span class="rating-num">${review.rating}</span>
+            </div>
+          </div>
+          <p class="review-text">"${review.text}"</p>
+          <div class="review-meta">
+            <span class="review-author">${review.author}</span>
+            <span class="review-date">${review.date}</span>
+          </div>
+        `;
+        reviewsGrid.appendChild(reviewCard);
+      });
+      document.querySelector('#reviews .view-more-btn').style.display = 'none';
+    }
+    // Review form submission handler
+    document.getElementById('reviewForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const formData = new FormData(this);
+      const reviewData = {
+        name: formData.get('reviewerName'),
+        city: formData.get('reviewerCity'),
+        date: formData.get('visitDate'),
+        rating: formData.get('rating'),
+        title: formData.get('reviewTitle'),
+        review: formData.get('reviewText')
+      };
+      alert(`Thank you ${reviewData.name} for your ${reviewData.rating}-star review! Your feedback helps other visitors plan their trip to Raigad Fort.`);
+      this.reset();
+    });
+  </script>
+</body>
+</html>

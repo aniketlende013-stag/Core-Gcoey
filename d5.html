@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interactive India Map with Sites</title>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <style>
+    body {
+      background: linear-gradient(135deg, #0f1724 0%, #1a2332 100%);
+      color: white;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      min-height: 100vh;
+    }
+    #map {
+      width: 65%;
+      height: 100vh;
+      position: relative;
+    }
+    #info {
+      width: 35%;
+      padding: 25px;
+      background: linear-gradient(180deg, #111827 0%, #1f2937 100%);
+      overflow-y: auto;
+      box-shadow: -5px 0 20px rgba(0,0,0,0.3);
+    }
+    .state {
+      fill: #2563eb;
+      stroke: #fff;
+      stroke-width: 1.2;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+    }
+    .state:hover {
+      fill: #facc15;
+      transform: scale(1.02);
+      stroke-width: 2;
+    }
+    .state.selected {
+      fill: #10b981;
+      stroke: #facc15;
+      stroke-width: 2;
+    }
+    h2 {
+      color: #facc15;
+      text-align: center;
+      margin-bottom: 20px;
+      font-size: 24px;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    }
+    h3 {
+      color: #10b981;
+      border-bottom: 2px solid #10b981;
+      padding-bottom: 8px;
+      margin-bottom: 20px;
+    }
+    ul {
+      padding-left: 0;
+      list-style: none;
+    }
+    li {
+      margin-bottom: 15px;
+      background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+      padding: 15px;
+      border-radius: 12px;
+      border-left: 4px solid #2563eb;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      transition: all 0.3s ease;
+    }
+    li:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+      border-left-color: #facc15;
+    }
+    .site-name {
+      font-weight: bold;
+      color: #f1f5f9;
+      font-size: 16px;
+      margin-bottom: 8px;
+    }
+    .site-preview {
+      color: #94a3b8;
+      font-size: 14px;
+      line-height: 1.4;
+      margin-bottom: 10px;
+    }
+    .view-details-btn {
+      margin-top: 8px;
+      padding: 8px 16px;
+      border: none;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+      color: white;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      text-decoration: none;
+      display: inline-block;
+      font-size: 14px;
+    }
+    .view-details-btn:hover {
+      background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+      color: white;
+      text-decoration: none;
+    }
+    /* Modal */
+    #modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.8);
+      justify-content: center;
+      align-items: center;
+      backdrop-filter: blur(5px);
+      z-index: 1000;
+    }
+    #modalContent {
+      background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+      padding: 30px;
+      border-radius: 16px;
+      max-width: 600px;
+      width: 90%;
+      color: white;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+      border: 1px solid #475569;
+      animation: modalSlideIn 0.3s ease;
+    }
+    @keyframes modalSlideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-50px) scale(0.9);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+    #closeModal {
+      float: right;
+      cursor: pointer;
+      font-size: 24px;
+      color: #f87171;
+      font-weight: bold;
+      line-height: 1;
+      padding: 5px;
+      border-radius: 50%;
+      transition: all 0.3s ease;
+    }
+    #closeModal:hover {
+      background: rgba(248, 113, 113, 0.2);
+      color: #fca5a5;
+    }
+    #modalTitle {
+      color: #facc15;
+      margin-bottom: 15px;
+      font-size: 22px;
+    }
+    #modalDesc {
+      line-height: 1.6;
+      font-size: 16px;
+      color: #e2e8f0;
+    }
+    .no-sites {
+      text-align: center;
+      color: #64748b;
+      font-style: italic;
+      padding: 40px 20px;
+      background: #1e293b;
+      border-radius: 12px;
+      border: 2px dashed #334155;
+    }
+    .state-count {
+      background: #10b981;
+      color: white;
+      padding: 4px 8px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: bold;
+      margin-left: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+  <div id="info">
+    <h2>🗺 Explore India's Heritage</h2>
+    <div id="details">
+      <p style="text-align: center; color: #64748b; font-style: italic;">Click on a state to discover its historical and cultural sites</p>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div id="modal">
+    <div id="modalContent">
+      <span id="closeModal">&times;</span>
+      <h3 id="modalTitle"></h3>
+      <p id="modalDesc"></p>
+    </div>
+  </div>
+
+  <script>
+    // Complete State → Sites mapping for all 28 states with HTML file links
+    const stateSites = {
+      "Andhra Pradesh": [
+        { name: "Tirupati Venkateswara Temple", desc: "One of the richest and most visited temples in the world, dedicated to Lord Venkateswara. Located on Tirumala Hills, it attracts millions of pilgrims annually.", file: "tirupati.html" },
+        { name: "Amaravathi Buddhist Sites", desc: "Ancient Buddhist stupas and monasteries dating back to 3rd century BCE, showcasing magnificent sculptures and architectural remains.", file: "amaravathi.html" },
+        { name: "Hampi-Vijayanagara", desc: "UNESCO World Heritage Site with ruins of the Vijayanagara Empire, featuring magnificent temples, palaces, and architectural marvels.", file: "hampi.html" },
+        { name: "Srisailam Temple", desc: "One of the twelve Jyotirlinga shrines dedicated to Lord Shiva, situated on the banks of Krishna River in Nallamala Hills.", file: "srisailam.html" },
+        { name: "Undavalli Caves", desc: "Rock-cut caves dating from 4th-5th century CE, famous for the huge reclining statue of Lord Vishnu carved from a single granite block.", file: "undavalli.html" },
+        { name: "Borra Caves", desc: "Natural limestone caves in Araku Valley, famous for their stalactite and stalagmite formations and archaeological significance.", file: "borra.html" }
+      ],
+      "Arunachal Pradesh": [
+        { name: "Tawang Monastery", desc: "Largest monastery in India and second largest in the world, perched at 10,000 feet altitude, housing 450 monks.", file: "tawang.html" },
+        { name: "Bomdila Monastery", desc: "Important Buddhist learning center with beautiful Himalayan views, known for its peaceful environment and spiritual significance.", file: "bomdila.html" },
+        { name: "Ita Fort", desc: "Historical fort built in 14th-15th century, showcasing the region's medieval architecture and strategic importance.", file: "itafort.html" },
+        { name: "Malinithan Temple", desc: "Ancient Shiva temple ruins dating back to 14th century, situated on the banks of Brahmaputra River.", file: "malinithan.html" },
+        { name: "Bhismaknagar Fort", desc: "Archaeological site with ancient fort ruins, believed to be the capital of the legendary King Bhismaka.", file: "bhismaknagar.html" },
+        { name: "Parshuram Kund", desc: "Sacred pilgrimage site where sage Parshuram is believed to have washed away his sins, attracts thousands during Makar Sankranti.", file: "parshuram.html" }
+      ],
+      "Assam": [
+        { name: "Kamakhya Temple", desc: "One of the 51 Shakti Peethas, this ancient temple dedicated to Goddess Kamakhya is a major pilgrimage site atop Nilachal Hill.", file: "kamakhya.html" },
+        { name: "Rang Ghar", desc: "Asia's oldest amphitheater built by Ahom kings for watching traditional games, showcasing unique Assamese architecture.", file: "rangghar.html" },
+        { name: "Sivasagar Sivadol", desc: "Group of temples built by Ahom queen Ambika, featuring the tallest Shiva temple in India with traditional Assamese architecture.", file: "sivasagar.html" },
+        { name: "Majuli Island Monasteries", desc: "World's largest river island housing ancient Vaishnavite monasteries (Satras) preserving Assamese culture and traditions.", file: "majuli.html" },
+        { name: "Talatal Ghar", desc: "Underground palace built by Ahom kings with secret tunnels and chambers, representing unique military architecture.", file: "talatal.html" },
+        { name: "Umananda Temple", desc: "Dedicated to Lord Shiva, located on Peacock Island in the Brahmaputra River, accessible by ferry boats.", file: "umananda.html" }
+      ],
+      "Bihar": [
+        { name: "Mahabodhi Temple, Bodh Gaya", desc: "UNESCO World Heritage Site where Buddha attained enlightenment under the Bodhi Tree, one of Buddhism's holiest places.", file: "bodhgaya.html" },
+        { name: "Nalanda University Ruins", desc: "Ancient international Buddhist university and UNESCO World Heritage Site, once the world's oldest residential university.", file: "nalanda.html" },
+        { name: "Vikramshila University Ruins", desc: "Important Buddhist center of learning founded by Pala king Dharmapala, featuring archaeological remains of ancient structures.", file: "vikramshila.html" },
+        { name: "Rajgir Hot Springs", desc: "Ancient city mentioned in Buddhist and Jain texts, famous for hot springs and historical significance in Indian history.", file: "rajgir.html" },
+        { name: "Vaishali Archaeological Site", desc: "Ancient capital of the Licchavi republic, birthplace of Lord Mahavira and site of Buddha's last sermon.", file: "vaishali.html" },
+        { name: "Munger Fort", desc: "Historical fort complex built during Mughal period, showcasing Indo-Islamic architecture and strategic military planning.", file: "munger.html" }
+      ],
+      "Chhattisgarh": [
+        { name: "Bhoramdeo Temple", desc: "Known as the 'Khajuraho of Chhattisgarh', famous for its erotic sculptures and intricate stone carvings from 11th century.", file: "bhoramdeo.html" },
+        { name: "Chitrakote Waterfalls", desc: "India's broadest waterfall known as the 'Niagara of India', creating spectacular horseshoe-shaped cascades.", file: "chitrakote.html" },
+        { name: "Sirpur Archaeological Site", desc: "Ancient town with Buddhist, Hindu, and Jain monuments dating from 5th-12th centuries, showcasing cultural synthesis.", file: "sirpur.html" },
+        { name: "Dantewada Danteshwari Temple", desc: "One of the 52 Shakti Peethas dedicated to Goddess Danteshwari, holding great religious significance for devotees.", file: "danteshwari.html" },
+        { name: "Ratanpur Fort Temple", desc: "Ancient fort town with Mahamaya Temple, former capital of Kalchuri dynasty with rich historical heritage.", file: "ratanpur.html" },
+        { name: "Malhar Archaeological Site", desc: "Ancient archaeological site with temples and sculptures from Kalchuri period, showcasing regional art and architecture.", file: "malhar.html" }
+      ],
+      "Goa": [
+        { name: "Basilica of Bom Jesus", desc: "UNESCO World Heritage Site housing the mortal remains of St. Francis Xavier, exemplifying baroque architecture.", file: "bomjesus.html" },
+        { name: "Se Cathedral", desc: "One of Asia's largest churches dedicated to St. Catherine, famous for its Portuguese colonial architecture and golden bell.", file: "secathedral.html" },
+        { name: "Fort Aguada", desc: "17th-century Portuguese fort with lighthouse, offering panoramic views of Arabian Sea and showcasing colonial military architecture.", file: "aguada.html" },
+        { name: "Shantadurga Temple", desc: "Beautiful Hindu temple dedicated to Goddess Shantadurga, showcasing Goan temple architecture with unique Indo-Portuguese elements.", file: "shantadurga.html" },
+        { name: "Mangeshi Temple", desc: "Ancient temple dedicated to Lord Shiva as Mangeshi, featuring distinctive Goan temple architecture with multi-story lamp tower.", file: "mangeshi.html" },
+        { name: "Cabo de Rama Fort", desc: "Ancient fort named after Lord Rama, offering stunning coastal views and showcasing strategic Portuguese fortifications.", file: "caborama.html" }
+      ],
+      "Gujarat": [
+        { name: "Chand Baori", desc: "One of the deepest and largest stepwells in India, built in the 9th century with 3,500 precise steps in geometric pattern.", file: "chand.html" },
+        { name: "Somnath Temple", desc: "First among the twelve Jyotirlinga shrines, rebuilt multiple times throughout history, symbol of resilience and faith.", file: "somnath.html" },
+        { name: "Dwarkadhish Temple", desc: "One of Char Dham pilgrimage sites dedicated to Lord Krishna, believed to be built over Krishna's ancient palace.", file: "dwarkadhish.html" },
+        { name: "Rani ki Vav, Patan", desc: "UNESCO World Heritage Site, an intricately carved stepwell from 11th century showcasing Maru-Gurjara architectural style.", file: "ranikivav.html" },
+        { name: "Sun Temple, Modhera", desc: "11th-century temple dedicated to Sun God, famous for its architectural precision allowing sunlight into sanctum during equinoxes.", file: "modhera.html" },
+        { name: "Sabarmati Ashram", desc: "Mahatma Gandhi's residence during independence struggle, now a museum showcasing Gandhi's life and philosophy.", file: "sabarmati.html" },
+        { name: "Champaner-Pavagadh", desc: "UNESCO World Heritage Site with medieval Islamic architecture, Hindu temples, and archaeological remains spanning centuries.", file: "champaner.html" },
+
+
+      ],
+      "Haryana": [
+        { name: "Kurukshetra Battlefield", desc: "Sacred site of the epic Mahabharata war, dotted with temples and tanks commemorating the legendary battle.", file: "kurukshetra.html" },
+        { name: "Brahma Sarovar", desc: "Ancient sacred water tank in Kurukshetra, believed to be created by Lord Brahma, site of ritual bathing during solar eclipses.", file: "brahmasarovar.html" },
+        { name: "Panipat Battlefield", desc: "Historic site of three decisive battles that shaped Indian history, with museums and monuments commemorating these events.", file: "panipat.html" },
+        { name: "Sheikh Chilli's Tomb", desc: "Mughal-era tomb showcasing Indo-Islamic architecture, associated with the Sufi saint and teacher of Dara Shikoh.", file: "sheikhchilli.html" },
+        { name: "Pinjore Gardens", desc: "17th-century Mughal garden built by Aurangzeb's foster brother, featuring terraced gardens and Mughal architectural elements.", file: "pinjore.html" },
+        { name: "Kalpana Chawla Planetarium", desc: "Modern planetarium dedicated to India's first woman astronaut, promoting space science education and awareness.", file: "planetarium.html" }
+      ],
+      "Himachal Pradesh": [
+        { name: "Golden Temple, Amritsar", desc: "Though in Punjab, easily accessible from Himachal, holiest shrine of Sikhism famous for its golden architecture and langar.", file: "goldentemple.html" },
+        { name: "Hadimba Temple, Manali", desc: "Ancient wooden temple dedicated to Hadimba Devi, showcasing traditional Himachali architecture amidst cedar forests.", file: "hadimba.html" },
+        { name: "Tashijong Monastery", desc: "Tibetan Buddhist monastery known for its traditional architecture and center for preserving Tibetan culture in exile.", file: "tashijong.html" },
+        { name: "Kangra Fort", desc: "Largest fort in Himalayas with over 1000 years of history, offering panoramic views of Kangra Valley.", file: "kangrafort.html" },
+        { name: "Baijnath Temple", desc: "13th-century stone temple dedicated to Lord Shiva, showcasing North Indian temple architecture in scenic Kangra Valley.", file: "baijnath.html" },
+        { name: "Key Monastery, Spiti", desc: "Ancient Tibetan Buddhist monastery perched on a hilltop at 4,166 meters, largest in Spiti Valley with rich cultural heritage.", file: "keymonastery.html" }
+      ],
+      "Jharkhand": [
+        { name: "Baidyanath Temple, Deoghar", desc: "One of the twelve Jyotirlinga shrines, major pilgrimage site during Shravan month when thousands of devotees visit.", file: "baidyanath.html" },
+        { name: "Parasnath Hill", desc: "Highest peak in Jharkhand and important Jain pilgrimage site where 20 out of 24 Jain Tirthankaras attained salvation.", file: "parasnath.html" },
+        { name: "Sun Temple, Bundu", desc: "18th-century temple dedicated to Sun God, showcasing regional architectural style and hosting annual Chhath Puja celebrations.", file: "bundusun.html" },
+        { name: "Jagannath Temple, Ranchi", desc: "Replica of Puri Jagannath Temple built in 17th century, important center for annual Rath Yatra celebrations.", file: "ranchijagannath.html" },
+        { name: "Maluti Temples", desc: "Group of terracotta temples from 17th-19th centuries showcasing Bengali architectural influence in Jharkhand region.", file: "maluti.html" },
+        { name: "Rajmahal Hills", desc: "Archaeological site with ancient rock paintings and fossils, showcasing prehistoric human settlements and geological history.", file: "rajmahal.html" }
+      ],
+      "Karnataka": [
+        { name: "Hampi Vijayanagara", desc: "UNESCO World Heritage Site with magnificent ruins of Vijayanagara Empire, showcasing 14th-16th century South Indian architecture.", file: "chariot.html" },
+        { name: "Mysore Palace", desc: "Opulent Indo-Saracenic palace of Wodeyar dynasty, famous for its architecture and spectacular Dasara celebrations.", file: "mysorepalace.html" },
+        { name: "Hoysaleswara Temple, Halebid", desc: "12th-century Hoysala architecture masterpiece with intricate stone carvings depicting mythological scenes and celestial figures.", file: "hoysaleswara.html" },
+        { name: "Gol Gumbaz, Bijapur", desc: "Mausoleum of Sultan Mohammed Adil Shah with world's second largest dome, famous for its unique acoustic properties.", file: "golgumbaz.html" },
+        { name: "Chennakesava Temple, Belur", desc: "Outstanding example of Hoysala architecture built in 12th century, renowned for its detailed sculptural work and artistic excellence.", file: "chennakesava.html" },
+        { name: "Pattadakal Monuments", desc: "UNESCO World Heritage Site showcasing 8th-century temple architecture representing both Dravidian and Nagara styles.", file: "pattadakal.html" }
+      ],
+      "Kerala": [
+        { name: "Padmanabhaswamy Temple", desc: "Ancient temple dedicated to Lord Vishnu, famous for its Dravidian architecture and as one of the richest temples in the world.", file: "padmanabhaswamy.html" },
+        { name: "Mattancherry Palace", desc: "Portuguese palace gifted to Kochi Raja, featuring beautiful Kerala murals depicting Hindu mythological themes.", file: "mattancherry.html" },
+        { name: "St. Francis Church, Fort Kochi", desc: "India's oldest European church where Vasco da Gama was originally buried, showcasing Portuguese colonial architecture.", file: "stfrancis.html" },
+        { name: "Bekal Fort", desc: "Large 17th-century fort on Arabian Sea coast, famous for its distinctive keyhole-shaped structure and scenic location.", file: "bekal.html" },
+        { name: "Sabarimala Temple", desc: "Famous pilgrimage site dedicated to Lord Ayyappa, attracting millions of devotees annually during specific seasons.", file: "sabarimala.html" },
+        { name: "Jewish Synagogue, Kochi", desc: "Oldest active synagogue in Commonwealth, showcasing Kerala's multicultural heritage with Chinese tiles and Belgian chandeliers.", file: "synagogue.html" }
+      ],
+      "Madhya Pradesh": [
+        { name: "Khajuraho Temples", desc: "UNESCO World Heritage Site famous for erotic sculptures and outstanding temple architecture from Chandela dynasty (950-1150 CE).", file: "khajuraho.html" },
+        { name: "Sanchi Stupa", desc: "UNESCO World Heritage Site with ancient Buddhist monuments dating from 3rd century BCE, showcasing Buddhist art and architecture.", file: "sanchi.html" },
+        { name: "Gwalior Fort", desc: "Magnificent hilltop fort called 'Gibraltar of India', showcasing various architectural styles from 8th-19th centuries.", file: "gwaliorfort.html" },
+        { name: "Bhimbetka Rock Shelters", desc: "UNESCO World Heritage Site with prehistoric cave paintings dating back 30,000 years, showcasing early human artistic expression.", file: "bhimbetka.html" },
+        { name: "Ujjain Mahakaleshwar Temple", desc: "One of twelve Jyotirlinga shrines dedicated to Lord Shiva, important pilgrimage site for Kumbh Mela celebrations.", file: "mahakaleshwar.html" },
+        { name: "Orchha Palace Complex", desc: "Medieval city with stunning palaces, temples, and cenotaphs showcasing Bundela architecture along Betwa River.", file: "orchha.html" }
+      ],
+      "Maharashtra": [
+          { 
+  "name": "Raigad Fort", 
+  "desc": "Majestic hill fort in Maharashtra, capital of Chhatrapati Shivaji Maharaj, known for its strategic location, Maratha history, and breathtaking views.", 
+  "file": "raigadfort.html" 
+},
+{ name: "Ellora Caves", desc: "UNESCO World Heritage Site with 34 caves representing Buddhist, Hindu, and Jain monuments, featuring the famous Kailash Temple.", file: "ellora.html" },
+        { name: "Shirdi Sai Baba Temple", desc: "One of the most visited pilgrimage sites in India, dedicated to Sai Baba. This sacred temple attracts millions of devotees annually.", file: "shirdi.html" },
+        { name: "Ajanta Caves", desc: "UNESCO World Heritage Site featuring 30 rock-cut Buddhist caves dating from 2nd century BCE to 480 CE with exquisite paintings.", file: "ellora.html" },
+        { 
+  "name": "Siddhivinayak Temple", 
+  "desc": "Famous Hindu temple in Mumbai dedicated to Lord Ganesha, attracting millions of devotees with its spiritual significance and architectural beauty.", 
+  "file": "siddhivinayak.html" 
+},
+{ 
+  "name": "Pandharpur Vitthal Temple", 
+  "desc": "Renowned temple in Maharashtra dedicated to Lord Vitthal and Rukmini, a major pilgrimage site especially during Ashadhi and Kartiki Ekadashi yatras.", 
+  "file": "pandharpur.html" 
+}
+,
+
+        { name: "Trimbakeshwar Temple", desc: "One of twelve Jyotirlinga temples dedicated to Lord Shiva, source of sacred Godavari River and Kumbh Mela site.", file: "trimbakeshwar.html" },
+        { name: "Gateway of India", desc: "Iconic arch monument in Mumbai built in 1924, symbol of the city and departure point for last British troops in 1948.", file: "gateway.html" },
+      
+
+      ],
+      "Manipur": [
+        { name: "Kangla Fort", desc: "Ancient seat of Manipuri rulers with archaeological remains and temples, showcasing the region's royal heritage.", file: "kangla.html" },
+        { name: "Govindajee Temple", desc: "Twin-domed temple dedicated to Lord Krishna, center of Manipuri Vaishnavism with unique architectural style.", file: "govindajee.html" },
+        { name: "Ima Keithel Market", desc: "World's largest all-women market run exclusively by women, showcasing local culture and traditional crafts.", file: "imakeithel.html" },
+        { name: "Loktak Lake Sendra Island", desc: "World's only floating national park on Loktak Lake, home to endangered Manipur brow-antlered deer (Sangai).", file: "sendra.html" },
+        { name: "War Cemetery Imphal", desc: "Commonwealth War Graves Commission cemetery commemorating soldiers who died in World War II's Imphal-Kohima battles.", file: "warcemetery.html" },
+        { name: "Shree Shree Bijoy Govinda Temple", desc: "Historic temple with beautiful architecture dedicated to Lord Krishna, important center of Manipuri religious practices.", file: "bijoygovinda.html" }
+      ],
+      "Meghalaya": [
+        { name: "Living Root Bridges", desc: "Unique bioengineering marvels created by Khasi tribes using rubber tree roots, some over 500 years old in Cherrapunji region.", file: "rootbridges.html" },
+        { name: "Nohkalikai Falls", desc: "India's tallest plunge waterfall at 1,115 feet, located near Cherrapunji with stunning views and tragic folklore.", file: "nohkalikai.html" },
+        { name: "Mawsynram Caves", desc: "Natural limestone caves in world's wettest place, featuring stalactite and stalagmite formations with unique geological features.", file: "mawsynram.html" },
+        { name: "Don Bosco Museum", desc: "Seven-story museum showcasing indigenous cultures of Northeast India through artifacts, displays, and cultural presentations.", file: "donbosco.html" },
+        { name: "Elephant Falls", desc: "Three-tiered waterfall near Shillong, popular tourist destination with easy accessibility and scenic beauty.", file: "elephantfalls.html" },
+        { name: "Umiam Lake", desc: "Artificial lake created by damming Umiam River, popular for water sports and scenic views surrounded by hills.", file: "umiam.html" }
+      ],
+      "Mizoram": [
+        { name: "Solomon's Temple", desc: "Largest church in Mizoram built with biblical proportions, important center for Christian community in Northeast India.", file: "solomon.html" },
+        { name: "Reiek Tourist Resort", desc: "Hilltop resort offering panoramic views of surrounding valleys, showcasing traditional Mizo village life and culture.", file: "reiek.html" },
+        { name: "Champhai Border Town", desc: "Scenic border town known as 'Rice Bowl of Mizoram' with beautiful valleys and cross-border cultural exchanges.", file: "champhai.html" },
+        { name: "Aizawl Presbyterian Church", desc: "Historic church representing the strong Christian heritage of Mizoram and center of Presbyterian community.", file: "presbyterian.html" },
+        { name: "Vantawng Falls", desc: "Highest waterfall in Mizoram cascading down 750 feet, surrounded by dense bamboo forests and tribal legends.", file: "vantawng.html" },
+        { name: "Phawngpui Blue Mountain", desc: "Highest peak in Mizoram at 2,157 meters, famous for rare blue orchids and diverse flora and fauna.", file: "phawngpui.html" }
+      ],
+      "Nagaland": [
+        { name: "Kohima War Cemetery", desc: "Commonwealth War Graves Commission cemetery commemorating Allied soldiers who died in World War II's Battle of Kohima.", file: "kohima.html" },
+        { name: "Hornbill Festival Venue", desc: "Annual cultural festival venue showcasing all Naga tribes' traditions, crafts, music, and dance in December.", file: "hornbill.html" },
+        { name: "Dzukou Valley", desc: "Valley of flowers shared with Manipur, famous for its seasonal flowers and trekking opportunities at 2,438 meters altitude.", file: "dzukou.html" },
+        { name: "Kachari Ruins", desc: "13th-century archaeological site with dome-shaped structures built by Kachari kingdom, showcasing medieval Assamese architecture.", file: "kachari.html" },
+        { name: "Longwa Village", desc: "Unique village straddling India-Myanmar border where village chief's house sits in both countries simultaneously.", file: "longwa.html" },
+        { name: "Mon District Headhunter Villages", desc: "Traditional Konyak Naga villages preserving ancient headhunting culture and distinctive facial tattoos of warriors.", file: "mon.html" }
+      ],
+      "Odisha": [
+        { name: "Sun Temple, Konark", desc: "13th-century architectural masterpiece designed as Sun God's chariot with 24 intricately carved wheels, UNESCO World Heritage Site.", file: "konark.html" },
+        { name: "Jagannath Temple, Puri", desc: "One of Char Dham pilgrimage sites famous for annual Rath Yatra festival, dedicated to Lord Jagannath with unique traditions.", file: "jagannath.html" },
+        { name: "Lingaraj Temple, Bhubaneswar", desc: "Largest temple in Bhubaneswar dedicated to Lord Shiva, representing Kalinga architecture with 55-meter tall main tower.", file: "lingaraj.html" },
+        { name: "Udayagiri & Khandagiri Caves", desc: "Ancient rock-cut Jain caves from 1st century BCE with intricate carvings and inscriptions from King Kharavela's reign.", file: "udayagiri.html" },
+        { name: "Dhauli Shanti Stupa", desc: "White peace pagoda marking Emperor Ashoka's transformation site after Kalinga War, featuring rock edicts and river views.", file: "dhauli.html" },
+        { name: "Ratnagiri Buddhist Monastery", desc: "Ancient Buddhist university complex from 5th-12th centuries with impressive stupas, sculptures, and monastic remains.", file: "ratnagiri.html" }
+      ],
+      "Punjab": [
+        { name: "Golden Temple, Amritsar", desc: "Holiest shrine of Sikhism with gold-plated architecture, famous for langar (community kitchen) serving thousands daily.", file: "goldentemple.html" },
+        { name: "Jallianwala Bagh", desc: "Memorial garden commemorating 1919 massacre, preserved as national monument with bullet marks and memorial structures.", file: "jallianwala.html" },
+        { name: "Wagah Border Ceremony", desc: "Daily ceremonial closing of India-Pakistan border with elaborate military parade attracting thousands of spectators.", file: "wagah.html" },
+        { name: "Anandpur Sahib", desc: "Holy city where Guru Gobind Singh founded Khalsa in 1699, featuring multiple gurdwaras and Sikh heritage sites.", file: "anandpur.html" },
+        { name: "Kapurthala Palace", desc: "French-style palace built by Maharaja Jagatjit Singh, showcasing European architectural influence in princely Punjab.", file: "kapurthala.html" },
+        { name: "Bathinda Fort", desc: "Ancient fort dating to 90-110 CE, one of India's oldest surviving forts with historical significance in regional history.", file: "bathinda.html" }
+      ],
+      "Rajasthan": [
+        { name: "Amber Fort, Jaipur", desc: "Magnificent hilltop fort showcasing Rajput architecture with mirror work, courtyards, and panoramic views of Pink City.", file: "amber.html" },
+        { name: "City Palace, Udaipur", desc: "Opulent palace complex on Lake Pichola showcasing Rajput and Mughal architecture with museums and royal artifacts.", file: "udaipurpalace.html" },
+        { name: "Mehrangarh Fort, Jodhpur", desc: "One of India's largest forts perched 400 feet above Blue City, showcasing Rajput military architecture and museums.", file: "mehrangarh.html" },
+        { name: "Hawa Mahal, Jaipur", desc: "Iconic Palace of Winds with 953 windows built for royal women to observe street festivals while maintaining purdah.", file: "hawamahal.html" },
+        { name: "Jaisalmer Fort", desc: "Living fort built of golden sandstone where families still reside, showcasing desert architecture and Rajput heritage.", file: "jaisalmer.html" },
+        { name: "Dilwara Temples, Mount Abu", desc: "Exquisite Jain temples famous for intricate marble carvings and architectural precision from 11th-13th centuries.", file: "dilwara.html" }
+      ],
+      "Sikkim": [
+        { name: "Rumtek Monastery", desc: "Largest monastery in Sikkim and seat of Karmapa, showcasing Tibetan Buddhist architecture and important religious artifacts.", file: "rumtek.html" },
+        { name: "Pemayangtse Monastery", desc: "Second oldest monastery in Sikkim built in 1705, offering panoramic views of Kanchenjunga and housing ancient Buddhist artifacts.", file: "pemayangtse.html" },
+        { name: "Tashiding Monastery", desc: "Sacred monastery on hilltop considered holiest in Sikkim, famous for its annual Bhumchu ceremony and spiritual significance.", file: "tashiding.html" },
+        { name: "Enchey Monastery", desc: "200-year-old monastery above Gangtok built on tantric worship site, featuring beautiful architecture and ritual ceremonies.", file: "enchey.html" },
+        { name: "Nathu La Pass", desc: "Historic mountain pass on India-China border at 14,140 feet, site of 1967 Sino-Indian conflict with strategic importance.", file: "nathula.html" },
+        { name: "Yuksom Historical Site", desc: "First capital of Sikkim where first Chogyal was crowned in 1642, starting point for Kanchenjunga treks with historical significance.", file: "yuksom.html" }
+      ],
+      "Tamil Nadu": [
+        { name: "Brihadeeswarar Temple, Thanjavur", desc: "UNESCO World Heritage Site built by Raja Raja Chola I in 1010 CE, masterpiece of Dravidian architecture with 66-meter tower.", file: "brihadeeswarar.html" },
+        { name: "Meenakshi Amman Temple, Madurai", desc: "Historic temple complex with 14 colorful gopurams and 33,000 sculptures, dedicated to Goddess Meenakshi and Lord Sundareswarar.", file: "meenakshi.html" },
+        { name: "Rameswaram Ramanathaswamy Temple", desc: "One of twelve Jyotirlinga shrines with world's longest temple corridors, major pilgrimage site on Pamban Island.", file: "rameswaram.html" },
+        { name: "Shore Temple, Mahabalipuram", desc: "UNESCO World Heritage Site from 8th century facing Bay of Bengal, one of India's oldest stone temples by Pallava dynasty.", file: "shore.html" },
+        { name: "Kanchipuram Temples", desc: "City of Thousand Temples, one of Hinduism's seven holiest cities with numerous ancient temples and silk weaving tradition.", file: "kanchipuram.html" },
+        { name: "Chidambaram Nataraja Temple", desc: "Ancient temple dedicated to Lord Shiva as cosmic dancer, representing space element with golden roofs and dance sculptures.", file: "chidambaram.html" }
+      ],
+      "Telangana": [
+        { name: "Charminar, Hyderabad", desc: "Iconic 16th-century monument and mosque built by Quli Qutb Shah, symbol of Hyderabad with Indo-Islamic architecture.", file: "charminar.html" },
+        { name: "Golconda Fort", desc: "Magnificent medieval fort complex famous for acoustic system and diamond mines, showcasing Qutb Shahi architecture.", file: "golconda.html" },
+        { name: "Ramappa Temple, Warangal", desc: "UNESCO World Heritage Site built in 13th century, showcasing Kakatiya architecture with floating bricks and intricate sculptures.", file: "ramappa.html" },
+        { name: "Thousand Pillar Temple", desc: "12th-century Kakatiya temple in Warangal with intricate stone carvings and architectural innovation showing regional craftsmanship.", file: "thousandpillar.html" },
+        { name: "Qutb Shahi Tombs", desc: "Royal necropolis of Qutb Shahi rulers with Indo-Islamic architecture, showcasing 16th-17th century tomb construction techniques.", file: "qutbshahi.html" },
+        { name: "Bhadrakali Temple, Warangal", desc: "Ancient temple dedicated to Goddess Bhadrakali, important religious site with stone architecture and cultural significance.", file: "bhadrakali.html" }
+      ],
+      "Tripura": [
+        { name: "Neermahal Palace", desc: "Water palace built in middle of Rudrasagar Lake, showcasing blend of Hindu and Islamic architecture in scenic setting.", file: "neermahal.html" },
+        { name: "Ujjayanta Palace", desc: "Former royal palace now serving as state museum, showcasing Indo-Saracenic architecture and Tripura's royal heritage.", file: "ujjayanta.html" },
+        { name: "Tripura Sundari Temple", desc: "One of 51 Shakti Peethas dedicated to Goddess Tripura Sundari, important pilgrimage site with traditional Bengali temple architecture.", file: "tripurasundari.html" },
+        { name: "Unakoti Archaeological Site", desc: "7th-11th century rock carvings and sculptures featuring largest bas-relief in India, showcasing ancient artistic traditions.", file: "unakoti.html" },
+        { name: "Kamalasagar Kali Temple", desc: "15th-century temple dedicated to Goddess Kali situated on Bangladesh border, showcasing traditional Bengali temple architecture.", file: "kamalasagar.html" },
+        { name: "Sepahijala Wildlife Sanctuary", desc: "Botanical garden and zoo showcasing Tripura's biodiversity with clouded leopards and regional flora conservation efforts.", file: "sepahijala.html" }
+      ],
+      "Uttar Pradesh": [
+        { name: "Taj Mahal, Agra", desc: "UNESCO World Heritage Site and Wonder of the World, marble mausoleum built by Shah Jahan as symbol of eternal love.", file: "tajmahal.html" },
+        { name: "Varanasi Ghats", desc: "Ancient spiritual city with 88 ghats along Ganges River, oldest living city and major pilgrimage destination for Hindus.", file: "varanasi.html" },
+        { name: "Fatehpur Sikri", desc: "UNESCO World Heritage Site, abandoned Mughal city built by Akbar showcasing Indo-Islamic architecture and planned urban design.", file: "fatehpursikri.html" },
+        { name: "Mathura-Vrindavan", desc: "Birthplace of Lord Krishna with numerous temples and pilgrimage sites celebrating Krishna's life and teachings.", file: "mathura.html" },
+        { name: "Sarnath Buddhist Site", desc: "Where Buddha gave his first sermon after enlightenment, featuring ancient stupas, museums, and Buddhist architectural remains.", file: "sarnath.html" },
+        { name: "Ayodhya Ram Janmabhoomi", desc: "Believed birthplace of Lord Rama with newly constructed Ram Temple, important pilgrimage site in Hindu tradition.", file: "ayodhya.html" }
+      ],
+      "Uttarakhand": [
+        { name: "Kedarnath Temple", desc: "One of twelve Jyotirlinga shrines at 3,583 meters altitude, important pilgrimage site accessible only during summer months.", file: "kedarnath.html" },
+        { name: "Badrinath Temple", desc: "One of Char Dham pilgrimage sites dedicated to Lord Vishnu, situated in Garhwal Himalayas with stunning mountain backdrop.", file: "badrinath.html" },
+        { name: "Haridwar Har Ki Pauri", desc: "Sacred ghat on Ganges River where daily Ganga Aarti attracts thousands, important pilgrimage site and Kumbh Mela venue.", file: "haridwar.html" },
+        { name: "Rishikesh Ashrams", desc: "Yoga capital of the world with numerous ashrams and spiritual centers, gateway to Char Dham pilgrimage sites.", file: "rishikesh.html" },
+        { name: "Valley of Flowers", desc: "UNESCO World Heritage Site, alpine valley famous for endemic flowers and wildlife, accessible through challenging trekking routes.", file: "valleyofflowers.html" },
+        { name: "Jageshwar Temple Complex", desc: "Group of 124 ancient temples dedicated to Lord Shiva, showcasing North Indian temple architecture in deodar forest setting.", file: "jageshwar.html" }
+      ],
+      "West Bengal": [
+        { name: "Victoria Memorial, Kolkata", desc: "Iconic marble monument dedicated to Queen Victoria, now museum showcasing colonial history and British Raj artifacts.", file: "victoria.html" },
+        { name: "Howrah Bridge", desc: "Engineering marvel and symbol of Kolkata, cantilever bridge over Hooghly River handling massive daily traffic without nuts and bolts.", file: "howrah.html" },
+        { name: "Dakshineswar Kali Temple", desc: "Temple where Sri Ramakrishna practiced and preached, dedicated to Goddess Kali with beautiful riverside location and architecture.", file: "dakshineswar.html" },
+        { name: "Sundarbans Mangrove Forest", desc: "UNESCO World Heritage Site, largest mangrove forest and home to Royal Bengal Tigers, unique ecosystem of rivers and forests.", file: "sundarbans.html" },
+        { name: "Bishnupur Terracotta Temples", desc: "17th-18th century temples with exquisite terracotta artwork showcasing Bengal's artistic heritage and Vaishnavite traditions.", file: "bishnupur.html" },
+        { name: "Cooch Behar Palace", desc: "Italian Renaissance-style palace built by Maharaja Nripendra Narayan, showcasing royal heritage with European architectural influence.", file: "coochbehar.html" }
+      ]
+    };
+
+    // Map setup with enhanced styling
+    const width = document.getElementById("map").clientWidth;
+    const height = window.innerHeight;
+
+    const svg = d3.select("#map")
+      .append("svg")
+      .attr("width", width)
+      .attr("height", height);
+
+    // Add gradient definitions for enhanced visual appeal
+    const defs = svg.append("defs");
+    const gradient = defs.append("linearGradient")
+      .attr("id", "stateGradient")
+      .attr("x1", "0%")
+      .attr("y1", "0%")
+      .attr("x2", "100%")
+      .attr("y2", "100%");
+    
+    gradient.append("stop")
+      .attr("offset", "0%")
+      .attr("style", "stop-color:#2563eb;stop-opacity:1");
+    
+    gradient.append("stop")
+      .attr("offset", "100%")
+      .attr("style", "stop-color:#1e40af;stop-opacity:1");
+
+    const projection = d3.geoMercator()
+      .center([82.8, 22])
+      .scale(1100)
+      .translate([width / 2, height / 2]);
+
+    const path = d3.geoPath().projection(projection);
+
+    // Load and render states with enhanced interactivity
+    d3.json("https://raw.githubusercontent.com/geohacker/india/master/state/india_telengana.geojson")
+      .then(function(indiaStates) {
+        svg.selectAll("path")
+          .data(indiaStates.features)
+          .enter()
+          .append("path")
+          .attr("d", path)
+          .attr("class", "state")
+          .attr("fill", "url(#stateGradient)")
+          .on("click", function(event, d) {
+            // Remove previous selection
+            svg.selectAll(".state").classed("selected", false);
+            // Add selection to current state
+            d3.select(this).classed("selected", true);
+            
+            const stateName = d.properties.NAME_1;
+            showStateInfo(stateName);
+          })
+          .on("mouseover", function(event, d) {
+            d3.select(this).style("cursor", "pointer");
+          });
+      })
+      .catch(error => {
+        console.error("Error loading map data:", error);
+        document.getElementById("details").innerHTML = 
+          '<p style="color: #f87171;">Error loading map data. Please check your internet connection.</p>';
+      });
+
+    function showStateInfo(stateName) {
+      const detailsDiv = document.getElementById("details");
+      if (stateSites[stateName]) {
+        const siteCount = stateSites[stateName].length;
+        detailsDiv.innerHTML = `
+          <h3>
+            ${stateName}
+            <span class="state-count">${siteCount} sites</span>
+          </h3>
+          <ul>
+            ${stateSites[stateName].map(site => `
+              <li>
+                <div class="site-name">${site.name}</div>
+                <div class="site-preview">${site.desc.substring(0, 120)}...</div>
+                <a href="${site.file}" class="view-details-btn" target="_blank">
+                  View Full Details
+                </a>
+              </li>
+            `).join("")}
+          </ul>
+        `;
+      } else {
+        detailsDiv.innerHTML = `
+          <h3>${stateName}</h3>
+          <div class="no-sites">
+            <p>📍 Sites data not yet available for this state</p>
+            <p>More destinations coming soon!</p>
+          </div>
+        `;
+      }
+    }
+
+    // Enhanced modal functions with better UX
+    function viewDetails(title, desc) {
+      document.getElementById("modalTitle").textContent = title;
+      document.getElementById("modalDesc").textContent = desc;
+      document.getElementById("modal").style.display = "flex";
+      document.body.style.overflow = "hidden"; // Prevent background scrolling
+    }
+
+    function closeModal() {
+      document.getElementById("modal").style.display = "none";
+      document.body.style.overflow = "auto"; // Restore scrolling
+    }
+
+    // Event listeners for modal
+    document.getElementById("closeModal").onclick = closeModal;
+
+    window.onclick = function(event) {
+      if (event.target == document.getElementById("modal")) {
+        closeModal();
+      }
+    }
+
+    // Keyboard support for accessibility
+    document.addEventListener("keydown", function(event) {
+      if (event.key === "Escape" && document.getElementById("modal").style.display === "flex") {
+        closeModal();
+      }
+    });
+
+    // Add some initial animation
+    svg.style("opacity", 0)
+       .transition()
+       .duration(1000)
+       .style("opacity", 1);
+  </script>
+</body>
+</html>

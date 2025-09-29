@@ -1,0 +1,622 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Gajanan Maharaj Temple, Shegaon</title>
+  <style>
+    :root {
+      --bg: #0f1724;
+      --card: #0b1220;
+      --muted: #94a3b8;
+      --accent: #2563eb;
+      --header-bg: #1e40af;
+      --radius: 16px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+      background: var(--bg);
+      color: #e6eef8;
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.6;
+    }
+    .container {
+      width: 100vw;
+      margin: 0;
+      padding: 0;
+    }
+    header, section, footer {
+      width: 80%;
+      margin-left: auto;
+      margin-right: auto;
+      box-sizing: border-box;
+    }
+    @media (max-width: 900px) {
+      header, section, footer {
+        width: 98%;
+      }
+    }
+    header {
+      background: linear-gradient(135deg, var(--header-bg), #3b82f6);
+      text-align: center;
+      padding: 40px 20px;
+      border-radius: 0 0 20px 20px;
+      box-shadow: 0 8px 32px rgba(30, 64, 175, 0.3);
+      margin-bottom: 40px;
+    }
+    header h1 {
+      font-size: 60px;
+      font-weight: 700;
+      letter-spacing: -1px;
+      color: white;
+    }
+    header h1 span {
+      color: #fbbf24;
+    }
+    nav {
+      margin-top: 18px;
+    }
+    nav a {
+      margin: 0 12px;
+      color: #e6eef8;
+      text-decoration: none;
+      font-size: 18px;
+      transition: color 0.3s ease;
+      padding: 8px 16px;
+      border-radius: 8px;
+    }
+    nav a:hover {
+      color: #fbbf24;
+      background: rgba(255, 255, 255, 0.1);
+    }
+    section {
+      background: var(--card);
+      padding: 28px;
+      border-radius: var(--radius);
+      margin-bottom: 32px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+    }
+    section h2 {
+      font-size: 28px;
+      margin-bottom: 12px;
+      color: var(--accent);
+    }
+    section p {
+      font-size: 18px;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+    .slideshow-container {
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto 18px auto;
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+  background: #222;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: unset; /* Remove fixed aspect ratio */
+  height: auto; /* Let height be determined by images */
+}
+.slides {
+  width: 100%;
+  min-height: 0;
+  height: auto;
+  max-height: 500px;
+  object-fit: contain; /* Show full image, no cropping */
+  display: none;
+  border-radius: 12px;
+}
+.slides.active {
+  display: block;
+}
+@media (max-width: 900px) {
+  .slideshow-container {
+    height: auto;
+  }
+  .slides {
+    max-height: 260px;
+  }
+}
+    .slides.active {
+      display: block;
+    }
+    .slide-indicators {
+      text-align: center;
+      margin-top: 15px;
+    }
+    .dot {
+      cursor: pointer;
+      height: 12px;
+      width: 12px;
+      margin: 0 5px;
+      background-color: #334155;
+      border-radius: 50%;
+      display: inline-block;
+      transition: background-color 0.3s ease;
+    }
+    .dot.active, .dot:hover {
+      background-color: var(--accent);
+    }
+    /* Gallery Scroll */
+    .gallery-scroll-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      margin-top: 12px;
+      margin-bottom: 18px;
+    }
+    .gallery-btn {
+      background: var(--card);
+      color: var(--accent);
+      border: none;
+      border-radius: 50%;
+      width: 38px;
+      height: 38px;
+      font-size: 22px;
+      cursor: pointer;
+      margin: 0 8px;
+      box-shadow: 0 2px 8px 0 rgba(37,99,235,0.09);
+      transition: background 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .gallery-btn:hover {
+      background: #1746a2;
+      color: #fff;
+    }
+    .gallery {
+      overflow-x: auto;
+      white-space: nowrap;
+      padding-bottom: 8px;
+      scroll-behavior: smooth;
+      width: 100%;
+      max-width: 100%;
+    }
+    .gallery img {
+      display: inline-block;
+      width: 320px;
+      height: 220px;
+      object-fit: cover;
+      border-radius: var(--radius);
+      margin-right: 18px;
+      transition: transform 0.3s;
+      vertical-align: middle;
+    }
+    .gallery img:last-child {
+      margin-right: 0;
+    }
+    /* Fun Facts */
+    .facts ul {
+      list-style: none;
+      width: 100%;
+      max-width: 100%;
+      text-align: left;
+      padding: 0;
+      font-size: 18px;
+    }
+    .facts li {
+      background: rgba(255,255,255,0.07);
+      margin: 12px 0;
+      padding: 18px;
+      border-radius: var(--radius);
+      width: 100%;
+      box-sizing: border-box;
+      /* Make li fit section width */
+      display: block;
+    }
+    /* Memories Section */
+    .memories-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      margin-top: 20px;
+    }
+    .memory-card {
+      background: linear-gradient(135deg, #1e293b, #334155);
+      padding: 20px;
+      border-radius: 12px;
+      border-left: 4px solid var(--accent);
+      transition: transform 0.3s ease;
+      margin-bottom: 8px;
+    }
+    .memory-card:hover {
+      transform: translateY(-2px);
+    }
+    .memory-card h3 {
+      color: #fbbf24;
+      font-size: 18px;
+      margin-bottom: 8px;
+    }
+    .memory-card .memory-text {
+      font-style: italic;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    .memory-card .memory-author {
+      color: var(--accent);
+      font-size: 14px;
+      text-align: right;
+    }
+    .share-form {
+      background: linear-gradient(135deg, #1e293b, #0f172a);
+      padding: 24px;
+      border-radius: 16px;
+      margin-top: 20px;
+      border: 1px solid #334155;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .form-group {
+      margin-bottom: 16px;
+      text-align: left;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--accent);
+      font-weight: 500;
+    }
+    .form-group input, .form-group textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      background: #0f172a;
+      color: #e6eef8;
+      font-size: 16px;
+      transition: border-color 0.3s ease;
+    }
+    .form-group input:focus, .form-group textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+    .file-upload-btn {
+      display: inline-block;
+      padding: 12px 20px;
+      background: var(--accent);
+      color: white;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      margin-bottom: 12px;
+    }
+    .file-upload-btn:hover {
+      background: #1d4ed8;
+    }
+    .file-upload-btn input[type="file"] {
+      display: none;
+    }
+    .submit-btn {
+      background: linear-gradient(135deg, var(--accent), #3b82f6);
+      color: white;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 500;
+      transition: transform 0.2s ease;
+    }
+    .submit-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+    }
+    .view-more-container {
+      text-align: center;
+      margin-top: 20px;
+    }
+    .view-more-btn {
+      background: linear-gradient(135deg, var(--accent), #3b82f6);
+      color: white;
+      padding: 10px 24px;
+      border: none;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+    }
+    .view-more-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4);
+    }
+    .content-preview .hidden-content {
+      margin-top: 12px;
+    }
+    footer {
+      text-align: center;
+      padding: 20px;
+      color: var(--muted);
+      font-size: 15px;
+      margin-top: 20px;
+    }
+    footer span {
+      color: var(--accent);
+    }
+    @media (max-width: 900px) {
+      header h1 {
+        font-size: 36px;
+      }
+      .slideshow-container {
+        aspect-ratio: 16/9;
+      }
+      .gallery img {
+        width: 180px;
+        height: 120px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Gajanan Maharaj <span>Temple</span></h1>
+      <nav>
+        <a href="#about">About</a>
+        <a href="#gallery">Gallery</a>
+        <a href="#history">History</a>
+        <a href="#visit">Visit Info</a>
+        <a href="#memories">Memories</a>
+      </nav>
+    </header>
+
+    <section id="about">
+      <h2>About the Temple</h2>
+      <p>
+        The Gajanan Maharaj Temple in Shegaon is one of the most revered spiritual places in Maharashtra. 
+        Devotees from across the country visit to seek blessings of Shri Gajanan Maharaj, a saint known 
+        for his miracles and divine grace.
+      </p>
+      <div class="slideshow-container">
+        <img class="slides active" src="https://imgs.search.brave.com/qQ3mpQ25QMqwdsS1biH_qOs0KtlEUFuf8PpEJgRPY38/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9jb250/ZW50LmpkbWFnaWNi/b3guY29tL2NvbXAv/cHVuZS9iMi8wMjBw/eHgyMC54eDIwLjE5/MDcxOTIxNDk1NS5o/OWIyL2NhdGFsb2d1/ZS9nYWphbmFuLW1h/aGFyYWotdGVtcGxl/LW5pZ2RpLXB1bmUt/dGVtcGxlcy14Zm1w/NmI2bmQxLmpwZz93/PTM4NDAmcT03NQ" alt="Temple Main Gate">
+        <img class="slides" src="https://imgs.search.brave.com/q5CIDlAcsNKD24wwqwf2y_lTpjhjEshwEBJotXG_U4s/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9jb250/ZW50LmpkbWFnaWNi/b3guY29tL2NvbXAv/c2hlZ2Fvbi9tMy85/OTk5cDcyNjIuNzI2/Mi4yMDA5MjkyMDUx/MDguczZtMy9jYXRh/bG9ndWUvZ2FqYW5h/bi1tYWhhcmFqLW1h/bmRpci1zaGVnYW9u/LXRlbXBsZXMteE1a/YXQ4Q0V2ai5qcGc_/dz0zODQwJnE9NzU" alt="Temple Interior">
+        <img class="slides" src="https://imgs.search.brave.com/zHGYkN9DHmqI5aPCCdYelUUb_PBrl7iv92oUTshvEU0/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9jb250/ZW50LmpkbWFnaWNi/b3guY29tL2NvbXAv/cHVuZS95OC8wMjBw/eHgyMC54eDIwLjE4/MTIxNDIyMDIzMC5z/NHk4L2NhdGFsb2d1/ZS9zaHJlZS1nYWph/bmFuLW1haGFyYWot/bWFuZGlyLXZhZGdh/b24tc2hlcmktcHVu/ZS10ZW1wbGVzLWYw/NHJ1aHB2NnQuanBn/P3c9Mzg0MCZxPTc1" alt="Evening Aarti">
+        <img class="slides" src="https://imgs.search.brave.com/IONY2sj-YGQ2hsQku8jRIzo40PjpPOtGAVqzYku92QI/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9jb250/ZW50LmpkbWFnaWNi/b3guY29tL3YyL2Nv/bXAvbXVtYmFpL3Ex/LzAyMnB4eDIyLnh4/MjIuMTMxMjIzMTMy/NDUxLmEycTEvY2F0/YWxvZ3VlL3Nocmkt/c2FudC1nYWphbmFu/LW1haGFyYWotdGVt/cGxlLXRoYW5lLXdl/c3QtdGhhbmUtdGVt/cGxlcy04MjV2MDho/dDdyLmpwZz93PTM4/NDAmcT03NQ" alt="Temple Complex">
+        <img class="slides" src="https://imgs.search.brave.com/nQ2-h4Cql5EQ4J8cPYiwzZzSIp_UE1aXfGwJ_s3nIn0/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9pLnBp/bmltZy5jb20vb3Jp/Z2luYWxzL2YyLzQy/L2EwL2YyNDJhMDc3/YmZkYmU5N2VmN2E4/MWYxYmIzZWRiM2E4/LmpwZw" alt="Devotees Praying">
+      </div>
+      <div class="slide-indicators">
+        <span class="dot active" onclick="currentSlide(1)"></span>
+        <span class="dot" onclick="currentSlide(2)"></span>
+        <span class="dot" onclick="currentSlide(3)"></span>
+        <span class="dot" onclick="currentSlide(4)"></span>
+        <span class="dot" onclick="currentSlide(5)"></span>
+      </div>
+    </section>
+
+    <section id="gallery">
+      <h2>Gallery</h2>
+      <p>Explore the divine beauty and spiritual atmosphere of our sacred temple through these images.</p>
+      <div class="gallery-scroll-container">
+        <button class="gallery-btn" id="galleryLeft" aria-label="Scroll left">&#8592;</button>
+        <div class="gallery" id="galleryScroll">
+  <img src="https://imgs.search.brave.com/qQ3mpQ25QMqwdsS1biH_qOs0KtlEUFuf8PpEJgRPY38/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9jb250/ZW50LmpkbWFnaWNi/b3guY29tL2NvbXAv/cHVuZS9iMi8wMjBw/eHgyMC54eDIwLjE5/MDcxOTIxNDk1NS5o/OWIyL2NhdGFsb2d1/ZS9nYWphbmFuLW1h/aGFyYWotdGVtcGxl/LW5pZ2RpLXB1bmUt/dGVtcGxlcy14Zm1w/NmI2bmQxLmpwZz93/PTM4NDAmcT03NQ" alt="Temple Main Gate">
+  <img src="https://imgs.search.brave.com/6fDAQDYw00OCoZc9LLK7E8v1yfGTgewq3jpCpJL1hhY/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9pLnBp/bmltZy5jb20vb3Jp/Z2luYWxzLzI2L2U0/LzU3LzI2ZTQ1NzZj/NzE2NjNjMzA5MmVl/Zjg4ZTM1NWFhOWUz/LmpwZw" alt="Temple Interior">
+  <img src="https://imgs.search.brave.com/feIHolMFxxK2Bh0sgxJrjEuOLdTW8jZd_FF7nBL-vo8/rs:fit:0:180:1:0/g:ce/aHR0cHM6Ly9jZG4u/czN3YWFzLmdvdi5p/bi9zM2E1NzcxYmNl/OTNlMjAwYzM2Zjdj/ZDlkZmQwZTVkZWFh/L3VwbG9hZHMvMjAx/OC8wNS8yMDE4MDUw/NDQyLnBuZw" alt="Evening Aarti">
+  <img src="https://imgs.search.brave.com/IONY2sj-YGQ2hsQku8jRIzo40PjpPOtGAVqzYku92QI/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9jb250/ZW50LmpkbWFnaWNi/b3guY29tL3YyL2Nv/bXAvbXVtYmFpL3Ex/LzAyMnB4eDIyLnh4/MjIuMTMxMjIzMTMy/NDUxLmEycTEvY2F0/YWxvZ3VlL3Nocmkt/c2FudC1nYWphbmFu/LW1haGFyYWotdGVt/cGxlLXRoYW5lLXdl/c3QtdGhhbmUtdGVt/cGxlcy04MjV2MDho/dDdyLmpwZz93PTM4/NDAmcT03NQ" alt="Temple Complex">
+  <img src="https://imgs.search.brave.com/nQ2-h4Cql5EQ4J8cPYiwzZzSIp_UE1aXfGwJ_s3nIn0/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9pLnBp/bmltZy5jb20vb3Jp/Z2luYWxzL2YyLzQy/L2EwL2YyNDJhMDc3/YmZkYmU5N2VmN2E4/MWYxYmIzZWRiM2E4/LmpwZw" alt="Devotees Praying">
+</div>
+
+        <button class="gallery-btn" id="galleryRight" aria-label="Scroll right">&#8594;</button>
+      </div>
+      <div class="view-more-container">
+        <button class="view-more-btn" onclick="viewMoreGallery()">View More</button>
+      </div>
+    </section>
+
+    <section id="facts" class="facts">
+      <h2>Fun Facts</h2>
+      <ul>
+        <li>The temple complex is spread over 50 acres.</li>
+        <li>Shegaon is called the "Pandharpur of Vidarbha".</li>
+        <li>Annadan (free meal) is served daily to thousands of devotees.</li>
+        <li>The temple is known for its cleanliness and discipline.</li>
+        <li>The Anand Sagar project nearby is a major tourist attraction.</li>
+        <li>Millions of devotees visit Shegaon every year during festivals.</li>
+      </ul>
+    </section>
+
+    <section id="history">
+      <h2>History</h2>
+      <div class="content-preview" id="history-content">
+        <p>
+          The temple was established in the late 19th century at the site where Shri Gajanan Maharaj took Samadhi. 
+          Over the years, it has become a hub of devotion, culture, and service, attracting lakhs of devotees annually.
+        </p>
+        <div class="hidden-content" style="display: none;">
+          <p>
+            The Sansthan at Shegaon manages several social and educational institutions inspired by the teachings of 
+            Shri Gajanan Maharaj, carrying forward his message of simplicity, service, and devotion.
+          </p>
+          <p>
+            Shri Gajanan Maharaj appeared in Shegaon in February 1878 and lived there until his Samadhi in 1910. 
+            During his 32 years of divine presence, he performed countless miracles and blessed thousands of devotees.
+          </p>
+          <p>
+            The original temple structure was simple, but over the decades it has been expanded and beautified while 
+            maintaining its spiritual sanctity. The Anand Sagar project, initiated in the 1990s, has transformed 
+            Shegaon into a major pilgrimage and tourist destination.
+          </p>
+        </div>
+      </div>
+      <div class="view-more-container">
+        <button class="view-more-btn" onclick="toggleContent('history')">View More</button>
+      </div>
+    </section>
+
+    <section id="visit">
+      <h2>Visiting Information</h2>
+      <div class="content-preview" id="visit-content">
+        <p>
+          Shegaon is well-connected by road and rail. The temple complex includes accommodation facilities, 
+          Prasad distribution, and an Anand Sagar project developed for devotees and tourists.
+        </p>
+        <div class="hidden-content" style="display: none;">
+          <p>
+            <strong>By Train:</strong> Shegaon Railway Station is well connected to major cities. Regular trains 
+            from Mumbai, Pune, Delhi, and other major cities halt here.
+          </p>
+          <p>
+            <strong>By Road:</strong> State transport and private buses regularly ply to Shegaon. The temple is 
+            about 85 km from Akola and 55 km from Buldhana.
+          </p>
+          <p>
+            <strong>Accommodation:</strong> The Sansthan provides various accommodation options including 
+            air-conditioned rooms, dormitories, and budget-friendly lodging for all types of pilgrims.
+          </p>
+          <p>
+            <strong>Best Time to Visit:</strong> October to March offers pleasant weather. Avoid monsoon season 
+            for outdoor activities at Anand Sagar.
+          </p>
+          <p>
+            <strong>Temple Timings:</strong> 4:30 AM to 10:00 PM daily. Special darshan timings during festivals 
+            and important occasions.
+          </p>
+        </div>
+      </div>
+      <div class="view-more-container">
+        <button class="view-more-btn" onclick="toggleContent('visit')">View More</button>
+      </div>
+    </section>
+
+    <section id="memories">
+      <h2>Devotee Memories</h2>
+      <p>Read the heartfelt experiences and divine encounters shared by our beloved devotees.</p>
+      <div class="memories-grid">
+        <div class="memory-card">
+          <h3>Miraculous Healing</h3>
+          <p class="memory-text">"I visited the temple during my mother's illness. After taking Gajanan Maharaj's blessings, she recovered completely. His grace is truly boundless."</p>
+          <p class="memory-author">- Priya Sharma, Mumbai</p>
+        </div>
+        <div class="memory-card">
+          <h3>Divine Guidance</h3>
+          <p class="memory-text">"During the most challenging phase of my life, I found peace and direction at this sacred place. Maharaj's presence is felt everywhere."</p>
+          <p class="memory-author">- Rajesh Patil, Pune</p>
+        </div>
+        <div class="memory-card">
+          <h3>Spiritual Awaken onclick="viewMoreMemories()">View More</button>
+      </div>ing</h3>
+          <p class="memory-text">"The morning aarti changed my life completely. I felt a divine connection that I had never experienced before. Jai Gajanan!"</p>
+          <p class="memory-author">- Meera Joshi, Nagpur</p>
+        </div>
+      </div>
+      <div class="view-more-container">
+        <button class="view-more-btn"
+      <div class="share-form">
+        <h3 style="color: #fbbf24; margin-bottom: 16px; text-align: center;">Share Your Memory</h3>
+        <form>
+          <div class="form-group">
+            <label for="name">Your Name</label>
+            <input type="text" id="name" name="name" placeholder="Enter your full name">
+          </div>
+          <div class="form-group">
+            <label for="city">City</label>
+            <input type="text" id="city" name="city" placeholder="Your city">
+          </div>
+          <div class="form-group">
+            <label for="memory">Share Your Experience</label>
+            <textarea id="memory" name="memory" rows="4" placeholder="Describe your divine experience or memory at the temple..."></textarea>
+          </div>
+          <div class="form-group">
+            <label class="file-upload-btn">
+              📸 Add Photo (Optional)
+              <input type="file" accept="image/*">
+            </label>
+          </div>
+          <button type="submit" class="submit-btn">Share My Memory</button>
+        </form>
+      </div>
+    </section>
+
+    <footer>
+      © 2025 <span>Gajanan Maharaj Sansthan</span> — All Rights Reserved.
+    </footer>
+  </div>
+  <script>
+    // Slideshow
+    let slideIndex = 0;
+    const slides = document.querySelectorAll('.slides');
+    const dots = document.querySelectorAll('.dot');
+    function showSlide(index) {
+      slides.forEach(slide => slide.classList.remove('active'));
+      dots.forEach(dot => dot.classList.remove('active'));
+      slides[index].classList.add('active');
+      dots[index].classList.add('active');
+    }
+    function nextSlide() {
+      slideIndex = (slideIndex + 1) % slides.length;
+      showSlide(slideIndex);
+    }
+    function currentSlide(index) {
+      slideIndex = index - 1;
+      showSlide(slideIndex);
+    }
+    setInterval(nextSlide, 4000);
+
+    // Gallery scroll buttons
+    document.getElementById('galleryLeft').onclick = function() {
+      document.getElementById('galleryScroll').scrollBy({left: -340, behavior: 'smooth'});
+    };
+    document.getElementById('galleryRight').onclick = function() {
+      document.getElementById('galleryScroll').scrollBy({left: 340, behavior: 'smooth'});
+    };
+
+    // View More functionality
+    function toggleContent(section) {
+      const content = document.getElementById(section + '-content');
+      const hiddenContent = content.querySelector('.hidden-content');
+      const button = content.parentElement.querySelector('.view-more-btn');
+      if (hiddenContent.style.display === 'none' || hiddenContent.style.display === '') {
+        hiddenContent.style.display = 'block';
+        button.textContent = 'View Less';
+      } else {
+        hiddenContent.style.display = 'none';
+        button.textContent = 'View More';
+      }
+    }
+    function viewMoreGallery() {
+      alert('More gallery images coming soon! Visit our temple to experience the divine beauty in person.');
+    }
+    function viewMoreMemories() {
+      const memoriesGrid = document.querySelector('.memories-grid');
+      const additionalMemories = [
+        {
+          title: "Family Blessings",
+          text: "We visit every year with our children. The peaceful atmosphere and Maharaj's blessings have brought prosperity to our family.",
+          author: "Amit & Sunita Desai, Nashik"
+        },
+        {
+          title: "Inner Peace",
+          text: "No matter how troubled I am, spending time in the temple premises always fills my heart with calmness and devotion.",
+          author: "Sushma Kulkarni, Aurangabad"
+        }
+      ];
+      additionalMemories.forEach(memory => {
+        const memoryCard = document.createElement('div');
+        memoryCard.className = 'memory-card';
+        memoryCard.innerHTML = `
+          <h3>${memory.title}</h3>
+          <p class="memory-text">"${memory.text}"</p>
+          <p class="memory-author">- ${memory.author}</p>
+        `;
+        memoriesGrid.appendChild(memoryCard);
+      });
+      document.querySelector('#memories .view-more-btn').style.display = 'none';
+    }
+    // Form submission handler
+    document.querySelector('.share-form form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      alert('Thank you for sharing your memory! Your experience will be reviewed and added to our memories section.');
+      this.reset();
+    });
+  </script>
+</body>
+</html>

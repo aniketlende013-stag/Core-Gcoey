@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Travel Guide AI</title>
+  <style>
+    body {
+      background-color: #000814;
+      color: #cbd5f7;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 30px;
+    }
+    h1 {
+      color: #60a5fa;
+    }
+    .card {
+      background: #001d3d;
+      border-radius: 12px;
+      padding: 20px;
+      margin: 20px auto;
+      max-width: 500px;
+      box-shadow: 0px 0px 15px #0ea5e9;
+    }
+    button {
+      background: #1d4ed8;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 20px;
+      margin: 10px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    button:hover {
+      background: #2563eb;
+    }
+    #result {
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 10px;
+      background: #002855;
+      color: #e0e7ff;
+    }
+  </style>
+</head>
+<body>
+  <h1>AI Travel Guide</h1>
+  <div class="card">
+    <h2>Where would you like to go?</h2>
+    <p>Select an option to know the best place to visit:</p>
+    <button onclick="findPlace('temple')">Temples</button>
+    <button onclick="findPlace('raigad')">Raigad Fort</button>
+  </div>
+
+  <div id="result"></div>
+
+  <script>
+    function findPlace(choice) {
+      let message = "";
+      switch (choice) {
+        case "temple":
+          message = `
+            <h3>Temples in Maharashtra</h3>
+            <p>Some famous temples to visit:</p>
+            <ul>
+              <li>Trimbakeshwar Temple, Nashik</li>
+              <li>Siddhivinayak Temple, Mumbai</li>
+              <li>Pandharpur Vitthal Temple</li>
+              <li>Gajanan Maharaj Temple, Shegaon</li>
+            </ul>
+            <p>These temples are known for their spiritual importance and architectural beauty.</p>
+          `;
+          break;
+        case "raigad":
+          message = `
+            <h3>Raigad Fort</h3>
+            <p>Raigad Fort, located in the Sahyadri mountain range of Maharashtra, is around 820m above sea level.</p>
+            <p>It was captured by Chhatrapati Shivaji Maharaj in 1656 and became his capital in 1674.</p>
+            <p>Raigad Fort is known as the "Gibraltar of the East" and offers breathtaking views, historical ruins, and trekking opportunities.</p>
+          `;
+          break;
+        default:
+          message = "<p>Please select a valid option.</p>";
+      }
+      document.getElementById("result").innerHTML = message;
+    }
+  </script>
+</body>
+</html>

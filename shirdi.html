@@ -1,0 +1,629 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Shirdi Sai Baba Temple</title>
+  <style>
+    :root {
+      --bg: #0f1724;
+      --card: #0b1220;
+      --muted: #94a3b8;
+      --accent: #2563eb;
+      --header-bg: #1e40af;
+      --radius: 16px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+      background: var(--bg);
+      color: #e6eef8;
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.6;
+    }
+    .container {
+      width: 100vw;
+      margin: 0;
+      padding: 0;
+    }
+    header, section, footer {
+      width: 80%;
+      margin-left: auto;
+      margin-right: auto;
+      box-sizing: border-box;
+    }
+    @media (max-width: 900px) {
+      header, section, footer {
+        width: 98%;
+      }
+    }
+    header {
+      background: linear-gradient(135deg, var(--header-bg), #3b82f6);
+      text-align: center;
+      padding: 40px 20px;
+      border-radius: 0 0 20px 20px;
+      box-shadow: 0 8px 32px rgba(30, 64, 175, 0.3);
+      margin-bottom: 40px;
+    }
+    header h1 {
+      font-size: 60px;
+      font-weight: 700;
+      letter-spacing: -1px;
+      color: white;
+    }
+    header h1 span {
+      color: #fbbf24;
+    }
+    nav {
+      margin-top: 18px;
+    }
+    nav a {
+      margin: 0 12px;
+      color: #e6eef8;
+      text-decoration: none;
+      font-size: 18px;
+      transition: color 0.3s ease;
+      padding: 8px 16px;
+      border-radius: 8px;
+    }
+    nav a:hover {
+      color: #fbbf24;
+      background: rgba(255, 255, 255, 0.1);
+    }
+    section {
+      background: var(--card);
+      padding: 28px;
+      border-radius: var(--radius);
+      margin-bottom: 32px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+    }
+    section h2 {
+      font-size: 28px;
+      margin-bottom: 12px;
+      color: var(--accent);
+    }
+    section p {
+      font-size: 18px;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+    .slideshow-container {
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto 18px auto;
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+  background: #222;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: unset; /* Remove fixed aspect ratio */
+  height: auto; /* Let height be determined by images */
+}
+.slides {
+  width: 100%;
+  min-height: 0;
+  height: auto;
+  max-height: 500px;
+  object-fit: contain; /* Show full image, no cropping */
+  display: none;
+  border-radius: 12px;
+}
+.slides.active {
+  display: block;
+}
+@media (max-width: 900px) {
+  .slideshow-container {
+    height: auto;
+  }
+  .slides {
+    max-height: 260px;
+  }
+}
+    .slides.active {
+      display: block;
+    }
+    .slide-indicators {
+      text-align: center;
+      margin-top: 15px;
+    }
+    .dot {
+      cursor: pointer;
+      height: 12px;
+      width: 12px;
+      margin: 0 5px;
+      background-color: #334155;
+      border-radius: 50%;
+      display: inline-block;
+      transition: background-color 0.3s ease;
+    }
+    .dot.active, .dot:hover {
+      background-color: var(--accent);
+    }
+    /* Gallery Scroll */
+    .gallery-scroll-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      margin-top: 12px;
+      margin-bottom: 18px;
+    }
+    .gallery-btn {
+      background: var(--card);
+      color: var(--accent);
+      border: none;
+      border-radius: 50%;
+      width: 38px;
+      height: 38px;
+      font-size: 22px;
+      cursor: pointer;
+      margin: 0 8px;
+      box-shadow: 0 2px 8px 0 rgba(37,99,235,0.09);
+      transition: background 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .gallery-btn:hover {
+      background: #1746a2;
+      color: #fff;
+    }
+    .gallery {
+      overflow-x: auto;
+      white-space: nowrap;
+      padding-bottom: 8px;
+      scroll-behavior: smooth;
+      width: 100%;
+      max-width: 100%;
+    }
+    .gallery img {
+      display: inline-block;
+      width: 320px;
+      height: 220px;
+      object-fit: cover;
+      border-radius: var(--radius);
+      margin-right: 18px;
+      transition: transform 0.3s;
+      vertical-align: middle;
+    }
+    .gallery img:last-child {
+      margin-right: 0;
+    }
+    /* Fun Facts */
+    .facts ul {
+      list-style: none;
+      width: 100%;
+      max-width: 100%;
+      text-align: left;
+      padding: 0;
+      font-size: 18px;
+    }
+    .facts li {
+      background: rgba(255,255,255,0.07);
+      margin: 12px 0;
+      padding: 18px;
+      border-radius: var(--radius);
+      width: 100%;
+      box-sizing: border-box;
+      /* Make li fit section width */
+      display: block;
+    }
+    /* Memories Section */
+    .memories-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      margin-top: 20px;
+    }
+    .memory-card {
+      background: linear-gradient(135deg, #1e293b, #334155);
+      padding: 20px;
+      border-radius: 12px;
+      border-left: 4px solid var(--accent);
+      transition: transform 0.3s ease;
+      margin-bottom: 8px;
+    }
+    .memory-card:hover {
+      transform: translateY(-2px);
+    }
+    .memory-card h3 {
+      color: #fbbf24;
+      font-size: 18px;
+      margin-bottom: 8px;
+    }
+    .memory-card .memory-text {
+      font-style: italic;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    .memory-card .memory-author {
+      color: var(--accent);
+      font-size: 14px;
+      text-align: right;
+    }
+    .share-form {
+      background: linear-gradient(135deg, #1e293b, #0f172a);
+      padding: 24px;
+      border-radius: 16px;
+      margin-top: 20px;
+      border: 1px solid #334155;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .form-group {
+      margin-bottom: 16px;
+      text-align: left;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--accent);
+      font-weight: 500;
+    }
+    .form-group input, .form-group textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      background: #0f172a;
+      color: #e6eef8;
+      font-size: 16px;
+      transition: border-color 0.3s ease;
+    }
+    .form-group input:focus, .form-group textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+    .file-upload-btn {
+      display: inline-block;
+      padding: 12px 20px;
+      background: var(--accent);
+      color: white;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      margin-bottom: 12px;
+    }
+    .file-upload-btn:hover {
+      background: #1d4ed8;
+    }
+    .file-upload-btn input[type="file"] {
+      display: none;
+    }
+    .submit-btn {
+      background: linear-gradient(135deg, var(--accent), #3b82f6);
+      color: white;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 500;
+      transition: transform 0.2s ease;
+    }
+    .submit-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+    }
+    .view-more-container {
+      text-align: center;
+      margin-top: 20px;
+    }
+    .view-more-btn {
+      background: linear-gradient(135deg, var(--accent), #3b82f6);
+      color: white;
+      padding: 10px 24px;
+      border: none;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+    }
+    .view-more-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4);
+    }
+    .content-preview .hidden-content {
+      margin-top: 12px;
+    }
+    footer {
+      text-align: center;
+      padding: 20px;
+      color: var(--muted);
+      font-size: 15px;
+      margin-top: 20px;
+    }
+    footer span {
+      color: var(--accent);
+    }
+    @media (max-width: 900px) {
+      header h1 {
+        font-size: 36px;
+      }
+      .slideshow-container {
+        aspect-ratio: 16/9;
+      }
+      .gallery img {
+        width: 180px;
+        height: 120px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Shirdi Sai Baba <span>Temple</span></h1>
+      <nav>
+        <a href="#about">About</a>
+        <a href="#gallery">Gallery</a>
+        <a href="#history">History</a>
+        <a href="#visit">Visit Info</a>
+        <a href="#memories">Memories</a>
+      </nav>
+    </header>
+
+    <section id="about">
+      <h2>About the Temple</h2>
+      <p>
+        The Shirdi Sai Baba Temple, located in Shirdi, Ahmednagar district, Maharashtra, is one of the most famous 
+        pilgrimage sites in India. It is dedicated to Sai Baba of Shirdi, a saint revered by both Hindus and Muslims 
+        for his teachings of love, equality, and service to humanity.
+      </p>
+      <div class="slideshow-container">
+        <img class="slides active" src="https://imgs.search.brave.com/u36VpRb8hVvJq9y_Kli1l9tLAdgSRtLTCTG1qYa4izQ/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9pLnBp/bmltZy5jb20vb3Jp/Z2luYWxzL2M2L2Qw/L2E2L2M2ZDBhNjA1/MWU2NThmMDJmMDU5/YjUwNjdiNDJiZjk0/LmpwZw" alt="Shirdi Sai Baba Temple Main Entrance">
+        <img class="slides" src="https://imgs.search.brave.com/4Yh_m-Ov1nSa2gL_BAy0v20Md8RRkpU7wcbkh6ncK_s/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9tZWRp/YS1jZG4udHJpcGFk/dmlzb3IuY29tL21l/ZGlhL3Bob3RvLW8v/MTEvZDEvYzIvZWYv/c2hpcmRpLXNhaS1i/YWJhLXRlbXBsZS5q/cGc" alt="Temple Interior">
+        <img class="slides" src="https://imgs.search.brave.com/G9tICQFB5uuvomvhdh4UvDumKd-IkgQW3_Q9GRILY9Q/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly93d3cu/c2F2YWFyaS5jb20v/YmxvZy93cC1jb250/ZW50L3VwbG9hZHMv/MjAyMy8wNi9zaGly/ZGktc2FpLXRlbXBs/ZTEud2VicA" alt="Sai Baba Idol">
+        <img class="slides" src="https://imgs.search.brave.com/RV3M8DZb9NSTdi-nLElj6Uh2t6-GZslNh1rxTVgiUOQ/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9tZWRp/YS1jZG4udHJpcGFk/dmlzb3IuY29tL21l/ZGlhL3Bob3RvLW8v/MWMvOTUvYmEvYWQv/c2hpcmRpLXNhaS1i/YWJhLWNhci1yZW50/YWwuanBn" alt="Temple Complex">
+        <img class="slides" src="https://imgs.search.brave.com/JlzEAaNq6zJtorlbJOBYgIEWfFZwRVOKHEpOuOTNI-U/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly93d3cu/dHJhd2VsbC5pbi9h/ZG1pbi9pbWFnZXMv/dXBsb2FkLzAwMDY4/MjMyNVNoaXJkaV9T/YWlfVGVtcGxlX01h/aW4uanBn" alt="Devotees at Temple">
+      </div>
+      <div class="slide-indicators">
+        <span class="dot active" onclick="currentSlide(1)"></span>
+        <span class="dot" onclick="currentSlide(2)"></span>
+        <span class="dot" onclick="currentSlide(3)"></span>
+        <span class="dot" onclick="currentSlide(4)"></span>
+        <span class="dot" onclick="currentSlide(5)"></span>
+      </div>
+    </section>
+
+    <section id="gallery">
+      <h2>Gallery</h2>
+      <p>Explore the divine beauty and spiritual atmosphere of the sacred Shirdi Sai Baba Temple through these images.</p>
+      <div class="gallery-scroll-container">
+        <button class="gallery-btn" id="galleryLeft" aria-label="Scroll left">&#8592;</button>
+        <div class="gallery" id="galleryScroll">
+          <img src="https://imgs.search.brave.com/u36VpRb8hVvJq9y_Kli1l9tLAdgSRtLTCTG1qYa4izQ/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9pLnBp/bmltZy5jb20vb3Jp/Z2luYWxzL2M2L2Qw/L2E2L2M2ZDBhNjA1/MWU2NThmMDJmMDU5/YjUwNjdiNDJiZjk0/LmpwZw" alt="Shirdi Sai Baba Temple Main Entrance">
+          <img src="https://imgs.search.brave.com/4Yh_m-Ov1nSa2gL_BAy0v20Md8RRkpU7wcbkh6ncK_s/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9tZWRp/YS1jZG4udHJpcGFk/dmlzb3IuY29tL21l/ZGlhL3Bob3RvLW8v/MTEvZDEvYzIvZWYv/c2hpcmRpLXNhaS1i/YWJhLXRlbXBsZS5q/cGc" alt="Temple Interior">
+          <img src="https://imgs.search.brave.com/G9tICQFB5uuvomvhdh4UvDumKd-IkgQW3_Q9GRILY9Q/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly93d3cu/c2F2YWFyaS5jb20v/YmxvZy93cC1jb250/ZW50L3VwbG9hZHMv/MjAyMy8wNi9zaGly/ZGktc2FpLXRlbXBs/ZTEud2VicA" alt="Sai Baba Idol">
+          <img src="https://imgs.search.brave.com/RV3M8DZb9NSTdi-nLElj6Uh2t6-GZslNh1rxTVgiUOQ/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9tZWRp/YS1jZG4udHJpcGFk/dmlzb3IuY29tL21l/ZGlhL3Bob3RvLW8v/MWMvOTUvYmEvYWQv/c2hpcmRpLXNhaS1i/YWJhLWNhci1yZW50/YWwuanBn" alt="Temple Complex">
+          <img src="https://imgs.search.brave.com/JlzEAaNq6zJtorlbJOBYgIEWfFZwRVOKHEpOuOTNI-U/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly93d3cu/dHJhd2VsbC5pbi9h/ZG1pbi9pbWFnZXMv/dXBsb2FkLzAwMDY4/MjMyNVNoaXJkaV9T/YWlfVGVtcGxlX01h/aW4uanBn" alt="Devotees at Temple">
+          <img src="https://imgs.search.brave.com/ez71s9fnfUy0bs_o_0Q24vgs_2AqYPU_7Z3FddC3J3c/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly93d3cu/c2h1dHRlcnN0b2Nr/LmNvbS9pbWFnZS1w/aG90by9zYWktYmFi/YS10ZW1wbGUtc2hp/cmRpLW1hbmFnZWQt/MjYwbnctMTI4MjQy/NTI1OS5qcGc" alt="Temple Managed View">
+        </div>
+        <button class="gallery-btn" id="galleryRight" aria-label="Scroll right">&#8594;</button>
+      </div>
+      <div class="view-more-container">
+        <button class="view-more-btn" onclick="viewMoreGallery()">View More</button>
+      </div>
+    </section>
+
+    <section id="facts" class="facts">
+      <h2>Fun Facts</h2>
+      <ul>
+        <li>The temple is managed by the Shri Saibaba Sansthan Trust.</li>
+        <li>Sai Baba never claimed to belong to any religion — he preached "Sabka Malik Ek" (One God governs all).</li>
+        <li>His tomb inside the temple was constructed exactly at the spot where he was buried in 1918.</li>
+        <li>On average 60,000–1,00,000 devotees visit daily, and during festivals the number goes up to over 5 lakh.</li>
+        <li>The main shrine houses a life-size marble idol of Sai Baba seated on a silver throne.</li>
+        <li>The temple attracts millions of devotees from India and across the world every year.</li>
+      </ul>
+    </section>
+
+    <section id="history">
+      <h2>History</h2>
+      <div class="content-preview" id="history-content">
+        <p>
+          Sai Baba came to Shirdi in 1858, initially living under a neem tree, later settling in a mosque 
+          (which he named Dwarkamai). He lived a simple life, healing the sick, helping the poor, and 
+          spreading messages of faith (Shraddha) and patience (Saburi).
+        </p>
+        <div class="hidden-content" style="display: none;">
+          <p>
+            Sai Baba was born around 1838 (birth details are debated, as he never revealed much about his early life). 
+            He came to Shirdi in 1858 and lived there until his Samadhi in 1918, a period of 60 years of divine presence.
+          </p>
+          <p>
+            In 1918, Sai Baba took Samadhi (left his mortal body). His followers built the shrine over his tomb. 
+            Over time, Shirdi developed into a large pilgrimage town with the temple as its heart.
+          </p>
+          <p>
+            Sai Baba never claimed to belong to any particular religion and welcomed people of all faiths. 
+            His famous saying "Sabka Malik Ek" (One God governs all) continues to inspire millions of devotees 
+            who visit Shirdi seeking his blessings.
+          </p>
+        </div>
+      </div>
+      <div class="view-more-container">
+        <button class="view-more-btn" onclick="toggleContent('history')">View More</button>
+      </div>
+    </section>
+
+    <section id="visit">
+      <h2>Visiting Information</h2>
+      <div class="content-preview" id="visit-content">
+        <p>
+          Shirdi is located in Ahmednagar district, Maharashtra, about 250 km from Mumbai, 90 km from Nashik, 
+          and 120 km from Aurangabad. The temple is well-connected by road, rail, and air.
+        </p>
+        <div class="hidden-content" style="display: none;">
+          <p>
+            <strong>By Train:</strong> Sainagar Shirdi Railway Station is well connected to Mumbai, Pune, Nagpur, 
+            Chennai, and other major cities across India.
+          </p>
+          <p>
+            <strong>By Air:</strong> Shirdi Airport (SAG) is about 15 km away with regular flights from major cities.
+          </p>
+          <p>
+            <strong>By Road:</strong> Excellent bus services from Mumbai, Pune, Nashik, and Aurangabad. 
+            State transport and private buses regularly ply to Shirdi.
+          </p>
+          <p>
+            <strong>Temple Timings:</strong> Temple opens at 4:00 AM with Kakada Aarti and closes around 11:15 PM 
+            after Shej Aarti.
+          </p>
+          <p>
+            <strong>Major Aartis:</strong> Kakada Aarti (4:30 AM), Madhyan Aarti (12:00 PM), Dhoop Aarti (Sunset), 
+            and Shej Aarti (10:30 PM). Advance booking required for participation.
+          </p>
+          <p>
+            <strong>Accommodation:</strong> The Shri Saibaba Sansthan Trust provides affordable rooms, 
+            and many hotels are available nearby for all budgets.
+          </p>
+          <p>
+            <strong>Best Time to Visit:</strong> October to March offers pleasant weather. Avoid peak summer months.
+          </p>
+        </div>
+      </div>
+      <div class="view-more-container">
+        <button class="view-more-btn" onclick="toggleContent('visit')">View More</button>
+      </div>
+    </section>
+
+    <section id="memories">
+      <h2>Devotee Memories</h2>
+      <p>Read the heartfelt experiences and divine encounters shared by devotees of Shirdi Sai Baba.</p>
+      <div class="memories-grid">
+        <div class="memory-card">
+          <h3>Miraculous Experience</h3>
+          <p class="memory-text">"When I was facing financial difficulties, I prayed to Sai Baba with complete faith. Within a week, I received an unexpected job offer. Sai's blessings are truly miraculous."</p>
+          <p class="memory-author">- Rajesh Kumar, Delhi</p>
+        </div>
+        <div class="memory-card">
+          <h3>Divine Guidance</h3>
+          <p class="memory-text">"During my mother's illness, I visited Shirdi and felt Baba's presence strongly. She recovered completely after our visit. Sabka Malik Ek - truly one God governs all."</p>
+          <p class="memory-author">- Priya Sharma, Mumbai</p>
+        </div>
+        <div class="memory-card">
+          <h3>Spiritual Awakening</h3>
+          <p class="memory-text">"The morning Kakada Aarti changed my perspective on life. I felt such peace and devotion that I had never experienced before. Sai Baba's grace is boundless."</p>
+          <p class="memory-author">- Amit Patil, Pune</p>
+        </div>
+      </div>
+      <div class="view-more-container">
+        <button class="view-more-btn" onclick="viewMoreMemories()">View More</button>
+      </div>
+      <div class="share-form">
+        <h3 style="color: #fbbf24; margin-bottom: 16px; text-align: center;">Share Your Memory</h3>
+        <form>
+          <div class="form-group">
+            <label for="name">Your Name</label>
+            <input type="text" id="name" name="name" placeholder="Enter your full name">
+          </div>
+          <div class="form-group">
+            <label for="city">City</label>
+            <input type="text" id="city" name="city" placeholder="Your city">
+          </div>
+          <div class="form-group">
+            <label for="memory">Share Your Experience</label>
+            <textarea id="memory" name="memory" rows="4" placeholder="Describe your divine experience or memory at Shirdi..."></textarea>
+          </div>
+          <div class="form-group">
+            <label class="file-upload-btn">
+              📸 Add Photo (Optional)
+              <input type="file" accept="image/*">
+            </label>
+          </div>
+          <button type="submit" class="submit-btn">Share My Memory</button>
+        </form>
+      </div>
+    </section>
+
+    <footer>
+      © 2025 <span>Shri Saibaba Sansthan Trust</span> — All Rights Reserved.
+    </footer>
+  </div>
+  <script>
+    // Slideshow
+    let slideIndex = 0;
+    const slides = document.querySelectorAll('.slides');
+    const dots = document.querySelectorAll('.dot');
+    function showSlide(index) {
+      slides.forEach(slide => slide.classList.remove('active'));
+      dots.forEach(dot => dot.classList.remove('active'));
+      slides[index].classList.add('active');
+      dots[index].classList.add('active');
+    }
+    function nextSlide() {
+      slideIndex = (slideIndex + 1) % slides.length;
+      showSlide(slideIndex);
+    }
+    function currentSlide(index) {
+      slideIndex = index - 1;
+      showSlide(slideIndex);
+    }
+    setInterval(nextSlide, 4000);
+
+    // Gallery scroll buttons
+    document.getElementById('galleryLeft').onclick = function() {
+      document.getElementById('galleryScroll').scrollBy({left: -340, behavior: 'smooth'});
+    };
+    document.getElementById('galleryRight').onclick = function() {
+      document.getElementById('galleryScroll').scrollBy({left: 340, behavior: 'smooth'});
+    };
+
+    // View More functionality
+    function toggleContent(section) {
+      const content = document.getElementById(section + '-content');
+      const hiddenContent = content.querySelector('.hidden-content');
+      const button = content.parentElement.querySelector('.view-more-btn');
+      if (hiddenContent.style.display === 'none' || hiddenContent.style.display === '') {
+        hiddenContent.style.display = 'block';
+        button.textContent = 'View Less';
+      } else {
+        hiddenContent.style.display = 'none';
+        button.textContent = 'View More';
+      }
+    }
+    function viewMoreGallery() {
+      alert('More gallery images coming soon! Visit Shirdi Sai Baba Temple to experience the divine beauty in person.');
+    }
+    function viewMoreMemories() {
+      const memoriesGrid = document.querySelector('.memories-grid');
+      const additionalMemories = [
+        {
+          title: "Family Blessings",
+          text: "We visit Shirdi every year with our children. Sai Baba's teachings of love and compassion have brought peace and prosperity to our family.",
+          author: "Sunita & Ravi Agarwal, Nashik"
+        },
+        {
+          title: "Answered Prayers",
+          text: "When my son was struggling with his career, we prayed at Shirdi. Soon after, he got his dream job. Sai Baba always listens to sincere prayers.",
+          author: "Meera Joshi, Aurangabad"
+        }
+      ];
+      additionalMemories.forEach(memory => {
+        const memoryCard = document.createElement('div');
+        memoryCard.className = 'memory-card';
+        memoryCard.innerHTML = `
+          <h3>${memory.title}</h3>
+          <p class="memory-text">"${memory.text}"</p>
+          <p class="memory-author">- ${memory.author}</p>
+        `;
+        memoriesGrid.appendChild(memoryCard);
+      });
+      document.querySelector('#memories .view-more-btn').style.display = 'none';
+    }
+    // Form submission handler
+    document.querySelector('.share-form form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      alert('Thank you for sharing your memory! Your experience will be reviewed and added to our memories section.');
+      this.reset();
+    });
+  </script>
+</body>
+</html> 
