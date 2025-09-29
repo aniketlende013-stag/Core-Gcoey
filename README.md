@@ -75,7 +75,7 @@ HeritageHub/
 
 ## 📸 Screenshots (Placeholder)
 
-![Home Page]()
+![Home Page](prototype.png)
 ![AR/VR Demo]()
 
 ---
