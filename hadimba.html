@@ -1,0 +1,501 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Hadimba Temple - Manali</title>
+  <style>
+    :root {
+      --bg: #0f1724;
+      --card: #0b1220;
+      --muted: #94a3b8;
+      --accent: #2563eb;
+      --header-bg: #1e40af;
+      --radius: 16px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+      background: var(--bg);
+      color: #e6eef8;
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.6;
+    }
+    .container {
+      width: 100vw;
+      margin: 0;
+      padding: 0;
+    }
+    header, section, footer {
+      width: 80%;
+      margin-left: auto;
+      margin-right: auto;
+      box-sizing: border-box;
+    }
+    @media (max-width: 900px) {
+      header, section, footer {
+        width: 98%;
+      }
+    }
+    header {
+      background: linear-gradient(135deg, var(--header-bg), #3b82f6);
+      text-align: center;
+      padding: 40px 20px;
+      border-radius: 0 0 20px 20px;
+      box-shadow: 0 8px 32px rgba(30, 64, 175, 0.3);
+      margin-bottom: 40px;
+    }
+    header h1 {
+      font-size: 60px;
+      font-weight: 700;
+      letter-spacing: -1px;
+      color: white;
+    }
+    header h1 span {
+      color: #fbbf24;
+    }
+    nav {
+      margin-top: 18px;
+    }
+    nav a {
+      margin: 0 12px;
+      color: #e6eef8;
+      text-decoration: none;
+      font-size: 18px;
+      transition: color 0.3s ease;
+      padding: 8px 16px;
+      border-radius: 8px;
+    }
+    nav a:hover {
+      color: #fbbf24;
+      background: rgba(255, 255, 255, 0.1);
+    }
+    section {
+      background: var(--card);
+      padding: 28px;
+      border-radius: var(--radius);
+      margin-bottom: 32px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+    }
+    section h2 {
+      font-size: 28px;
+      margin-bottom: 12px;
+      color: var(--accent);
+    }
+    section p {
+      font-size: 18px;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+    .slideshow-container {
+      width: 100%;
+      max-width: 100%;
+      margin: 0 auto 18px auto;
+      position: relative;
+      overflow: hidden;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+      background: #222;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      aspect-ratio: unset;
+      height: auto;
+    }
+    .slides {
+      width: 100%;
+      min-height: 0;
+      height: auto;
+      max-height: 500px;
+      object-fit: contain;
+      display: none;
+      border-radius: 12px;
+    }
+    .slides.active {
+      display: block;
+    }
+    @media (max-width: 900px) {
+      .slideshow-container {
+        height: auto;
+      }
+      .slides {
+        max-height: 260px;
+      }
+    }
+    .slide-indicators {
+      text-align: center;
+      margin-top: 15px;
+    }
+    .dot {
+      cursor: pointer;
+      height: 12px;
+      width: 12px;
+      margin: 0 5px;
+      background-color: #334155;
+      border-radius: 50%;
+      display: inline-block;
+      transition: background-color 0.3s ease;
+    }
+    .dot.active, .dot:hover {
+      background-color: var(--accent);
+    }
+    .gallery-scroll-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      margin-top: 12px;
+      margin-bottom: 18px;
+    }
+    .gallery-btn {
+      background: var(--card);
+      color: var(--accent);
+      border: none;
+      border-radius: 50%;
+      width: 38px;
+      height: 38px;
+      font-size: 22px;
+      cursor: pointer;
+      margin: 0 8px;
+      box-shadow: 0 2px 8px 0 rgba(37,99,235,0.09);
+      transition: background 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .gallery-btn:hover {
+      background: #1746a2;
+      color: #fff;
+    }
+    .gallery {
+      overflow-x: auto;
+      white-space: nowrap;
+      padding-bottom: 8px;
+      scroll-behavior: smooth;
+      width: 100%;
+      max-width: 100%;
+    }
+    .gallery img {
+      display: inline-block;
+      width: 320px;
+      height: 220px;
+      object-fit: cover;
+      border-radius: var(--radius);
+      margin-right: 18px;
+      transition: transform 0.3s;
+      vertical-align: middle;
+    }
+    .gallery img:last-child {
+      margin-right: 0;
+    }
+    .facts ul {
+      list-style: none;
+      width: 100%;
+      max-width: 100%;
+      text-align: left;
+      padding: 0;
+      font-size: 18px;
+    }
+    .facts li {
+      background: rgba(255,255,255,0.07);
+      margin: 12px 0;
+      padding: 18px;
+      border-radius: var(--radius);
+      width: 100%;
+      box-sizing: border-box;
+      display: block;
+    }
+    .memories-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      margin-top: 20px;
+    }
+    .memory-card {
+      background: linear-gradient(135deg, #1e293b, #334155);
+      padding: 20px;
+      border-radius: 12px;
+      border-left: 4px solid var(--accent);
+      transition: transform 0.3s ease;
+      margin-bottom: 8px;
+    }
+    .memory-card:hover {
+      transform: translateY(-2px);
+    }
+    .memory-card h3 {
+      color: #fbbf24;
+      font-size: 18px;
+      margin-bottom: 8px;
+    }
+    .memory-card .memory-text {
+      font-style: italic;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    .memory-card .memory-author {
+      color: var(--accent);
+      font-size: 14px;
+      text-align: right;
+    }
+    .share-form {
+      background: linear-gradient(135deg, #1e293b, #0f172a);
+      padding: 24px;
+      border-radius: 16px;
+      margin-top: 20px;
+      border: 1px solid #334155;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .form-group {
+      margin-bottom: 16px;
+      text-align: left;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--accent);
+      font-weight: 500;
+    }
+    .form-group input, .form-group textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      background: #0f172a;
+      color: #e6eef8;
+      font-size: 16px;
+      transition: border-color 0.3s ease;
+    }
+    .form-group input:focus, .form-group textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+    .file-upload-btn {
+      display: inline-block;
+      padding: 12px 20px;
+      background: var(--accent);
+      color: white;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      margin-bottom: 12px;
+    }
+    .file-upload-btn:hover {
+      background: #1d4ed8;
+    }
+    .file-upload-btn input[type="file"] {
+      display: none;
+    }
+    .submit-btn {
+      background: linear-gradient(135deg, var(--accent), #3b82f6);
+      color: white;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 500;
+      transition: transform 0.2s ease;
+    }
+    .submit-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+    }
+    .view-more-container {
+      text-align: center;
+      margin-top: 20px;
+    }
+    .view-more-btn {
+      background: linear-gradient(135deg, var(--accent), #3b82f6);
+      color: white;
+      padding: 10px 24px;
+      border: none;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+    }
+    .view-more-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4);
+    }
+    .content-preview .hidden-content {
+      margin-top: 12px;
+    }
+    footer {
+      text-align: center;
+      padding: 20px;
+      color: var(--muted);
+      font-size: 15px;
+      margin-top: 20px;
+    }
+    footer span {
+      color: var(--accent);
+    }
+    @media (max-width: 900px) {
+      header h1 {
+        font-size: 36px;
+      }
+      .slideshow-container {
+        aspect-ratio: 16/9;
+      }
+      .gallery img {
+        width: 180px;
+        height: 120px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Hadimba <span>Temple</span></h1>
+      <nav>
+        <a href="#about">About</a>
+        <a href="#gallery">Gallery</a>
+        <a href="#history">History</a>
+        <a href="#visit">Visit Info</a>
+        <a href="#memories">Memories</a>
+      </nav>
+    </header>
+
+    <section id="about">
+      <h2>About the Temple</h2>
+      <p>
+        The Hadimba Temple, also known as Hidimba Devi Temple, is located in Manali, Himachal Pradesh, India. 
+        Nestled amidst dense cedar forests at the foot of the Himalayas, this unique temple is dedicated to 
+        Hidimba Devi, wife of Bhima (one of the Pandava brothers from Mahabharata).
+      </p>
+      <p>
+        Famous for its unique pagoda-style wooden architecture with intricate carvings, the temple stands as 
+        an architectural marvel and an important pilgrimage site. The temple is surrounded by beautiful pine 
+        and cedar forests, making it a popular tourist destination.
+      </p>
+      <div class="slideshow-container">
+        <img class="slides active" src="https://imgs.search.brave.com/VC1dZZGwKkpojd2qYtTPYkvAt-e9SRYD3YnrFQtEb6A/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly90aHVt/YnMuZHJlYW1zdGlt/ZS5jb20vYi9oaWRp/bWJhLWRldmktdGVt/cGxlLWxvY2FsbHkt/a25vd24tYXMtZGh1/bmdhcmktdGVtcGxl/LWFsc28ta25vd24t/dmFyaW91c2x5LWFz/LWhhZGltYmEtdGVt/cGxlLWxvY2F0ZWQt/bWFuLWxpLWhpbGwt/Mjk4NTAxMTI5Lmpw/Zw" alt="Hadimba Temple Exterior View">
+        <img class="slides" src="https://imgs.search.brave.com/WMFz8Iyf5QGlEokwQif13eishQVX9AGy9HX_2bpMgj4/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly93d3cu/c3Rlcmxpbmdob2xp/ZGF5cy5jb20vYWN0/aXZpdGllcy9tYW5h/bGkvbXVzdHNlZS9i/YW5uZXJpbWFnZS9t/YW5hbGlfaGlkaW1i/YV9kZXZpX3RlbXBs/ZS5qcGcuaW1ndy4x/MjgwLjEyODAuanBl/Zw" alt="Temple in Cedar Forest">
+        <img class="slides" src="https://imgs.search.brave.com/ofP8s2aENKHQ9QvGU7Bsz-FiNe_fmxLoT556-mUXHMY/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9zN2Fw/MS5zY2VuZTcuY29t/L2lzL2ltYWdlL2lu/Y3JlZGlibGVpbmRp/YS9oaWRpbWJhLXRl/bXBsZS1tYW5hbGkt/aGltYWNoYWwtcHJh/ZGVzaC0zLW11c3Ro/ZWFkLWhlcm8_cWx0/PTgyJnRzPTE3MjY3/MzA4NjczMTc" alt="Temple Architecture Close-up">
+        <img class="slides" src="https://imgs.search.brave.com/3uJF-SX_Izso7b0YxW_46agsX85vkIvTVwHxQ2wGXxw/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly93d3cu/bWFub3JhbWFvbmxp/bmUuY29tL2NvbnRl/bnQvZGFtL21tL21v/L3RyYXZlbC90cmF2/ZWwtaW5kaWEvaW1h/Z2VzLzIwMjIvMi80/L2hpZGltYmEtZGV2/aS10ZW1wbGUxLnBu/Zw" alt="Temple Entrance">
+        <img class="slides" src="https://imgs.search.brave.com/0XfEmtR5E2D0bn9WvJFrTFqSqJmKpiLTypN12oZzStI/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly93YW5k/ZXJvbi1pbWFnZXMu/Z3VtbGV0LmlvL2dh/bGxlcnkvbmV3LzIw/MjUvMDQvMjgvMTc0/NTg0MjM5NzQzOS1o/aWRpbWJhLXRlbXBs/ZS1pbi1tYW5hbGku/anBn" alt="Scenic View with Mountains">
+        <img class="slides" src="https://imgs.search.brave.com/vEEB5kSTSOWPHyA38bYwE_U4v3nLeMCVeaGJRdh5J-E/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9tZWRp/YS5pc3RvY2twaG90/by5jb20vaWQvMTQx/MTI3OTMyNS9waG90/by9oYWRpbWJhLXRl/bXBsZS1pbi1tYW5h/bGktaGltYWNoYWwt/cHJhZGVzaC5qcGc_/cz02MTJ4NjEyJnc9/MCZrPTIwJmM9cjg3/QTJlVldIcW1QMGhE/dVdGaFpkeWEwc2h3/a2h3YmdxTUpOZGNJ/TjhsST0" alt="Temple Courtyard">
+      </div>
+      <div class="slide-indicators">
+        <span class="dot active" onclick="currentSlide(1)"></span>
+        <span class="dot" onclick="currentSlide(2)"></span>
+        <span class="dot" onclick="currentSlide(3)"></span>
+        <span class="dot" onclick="currentSlide(4)"></span>
+        <span class="dot" onclick="currentSlide(5)"></span>
+        <span class="dot" onclick="currentSlide(6)"></span>
+      </div>
+    </section>
+
+    <section id="gallery">
+      <h2>Gallery</h2>
+      <p>Explore the unique architecture and natural beauty of the Hadimba Temple set amidst the majestic Himalayan forests.</p>
+      <div class="gallery-scroll-container">
+        <button class="gallery-btn" id="galleryLeft" aria-label="Scroll left">&#8592;</button>
+        <div class="gallery" id="galleryScroll">
+          <img src="https://imgs.search.brave.com/VC1dZZGwKkpojd2qYtTPYkvAt-e9SRYD3YnrFQtEb6A/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly90aHVt/YnMuZHJlYW1zdGlt/ZS5jb20vYi9oaWRp/bWJhLWRldmktdGVt/cGxlLWxvY2FsbHkt/a25vd24tYXMtZGh1/bmdhcmktdGVtcGxl/LWFsc28ta25vd24t/dmFyaW91c2x5LWFz/LWhhZGltYmEtdGVt/cGxlLWxvY2F0ZWQt/bWFuLWxpLWhpbGwt/Mjk4NTAxMTI5Lmpw/Zw" alt="Hadimba Temple Exterior">
+          <img src="https://imgs.search.brave.com/WMFz8Iyf5QGlEokwQif13eishQVX9AGy9HX_2bpMgj4/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly93d3cu/c3Rlcmxpbmdob2xp/ZGF5cy5jb20vYWN0/aXZpdGllcy9tYW5h/bGkvbXVzdHNlZS9i/YW5uZXJpbWFnZS9t/YW5hbGlfaGlkaW1i/YV9kZXZpX3RlbXBs/ZS5qcGcuaW1ndy4x/MjgwLjEyODAuanBl/Zw" alt="Forest Surroundings">
+          <img src="https://imgs.search.brave.com/ofP8s2aENKHQ9QvGU7Bsz-FiNe_fmxLoT556-mUXHMY/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9zN2Fw/MS5zY2VuZTcuY29t/L2lzL2ltYWdlL2lu/Y3JlZGlibGVpbmRp/YS9oaWRpbWJhLXRl/bXBsZS1tYW5hbGkt/aGltYWNoYWwtcHJh/ZGVzaC0zLW11c3Ro/ZWFkLWhlcm8_cWx0/PTgyJnRzPTE3MjY3/MzA4NjczMTc" alt="Intricate Carvings">
+          <img src="https://imgs.search.brave.com/3uJF-SX_Izso7b0YxW_46agsX85vkIvTVwHxQ2wGXxw/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly93d3cu/bWFub3JhbWFvbmxp/bmUuY29tL2NvbnRl/bnQvZGFtL21tL21v/L3RyYXZlbC90cmF2/ZWwtaW5kaWEvaW1h/Z2VzLzIwMjIvMi80/L2hpZGltYmEtZGV2/aS10ZW1wbGUxLnBu/Zw" alt="Temple Entrance Detail">
+          <img src="https://imgs.search.brave.com/0XfEmtR5E2D0bn9WvJFrTFqSqJmKpiLTypN12oZzStI/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly93YW5k/ZXJvbi1pbWFnZXMu/Z3VtbGV0LmlvL2dh/bGxlcnkvbmV3LzIw/MjUvMDQvMjgvMTc0/NTg0MjM5NzQzOS1o/aWRpbWJhLXRlbXBs/ZS1pbi1tYW5hbGku/anBn" alt="Mountain Backdrop">
+          <img src="https://imgs.search.brave.com/vEEB5kSTSOWPHyA38bYwE_U4v3nLeMCVeaGJRdh5J-E/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9tZWRp/YS5pc3RvY2twaG90/by5jb20vaWQvMTQx/MTI3OTMyNS9waG90/by9oYWRpbWJhLXRl/bXBsZS1pbi1tYW5h/bGktaGltYWNoYWwt/cHJhZGVzaC5qcGc_/cz02MTJ4NjEyJnc9/MCZrPTIwJmM9cjg3/QTJlVldIcW1QMGhE/dVdGaFpkeWEwc2h3/a2h3YmdxTUpOZGNJ/TjhsST0" alt="Courtyard View">
+        </div>
+        <button class="gallery-btn" id="galleryRight" aria-label="Scroll right">&#8594;</button>
+      </div>
+      <div class="view-more-container">
+        <button class="view-more-btn" onclick="viewMoreGallery()">View More</button>
+      </div>
+    </section>
+
+    <section id="facts" class="facts">
+      <h2>Fun Facts</h2>
+      <ul>
+        <li>The temple does not have an idol of Hidimba but instead features a footprint on a rock believed to be in the form of the goddess.</li>
+        <li>The structure is made of wood and stone with a unique four-tiered pagoda roof, showcasing traditional Himachali architecture.</li>
+        <li>Built in 1553 CE by Maharaja Bahadur Singh, the temple stands as a testament to ancient craftsmanship.</li>
+        <li>The temple is surrounded by the Dhungiri Van Vihar, a beautiful cedar forest that adds to its serene atmosphere.</li>
+        <li>Yaks and rabbits are often found nearby for tourist rides and photos, adding to the unique experience.</li>
+        <li>The local Dhungari Festival held in May draws large crowds and showcases traditional Himachali culture and traditions.</li>
+        <li>The temple's wooden carvings feature intricate designs depicting gods, goddesses, and animals from Hindu mythology.</li>
+      </ul>
+    </section>
+
+    <section id="history">
+      <h2>History</h2>
+      <div class="content-preview" id="history-content">
+        <p>
+          The Hadimba Temple was built in 1553 CE by Maharaja Bahadur Singh. It is dedicated to Hidimba Devi, 
+          the wife of Bhima, one of the five Pandava brothers from the epic Mahabharata. According to legend, 
+          Hidimba performed penance at this spot and the temple was built to honor her devotion.
+        </p>
+        <div class="hidden-content" style="display: none;">
+          <p>
+            The temple stands on a rock believed to be in the form of the goddess Hidimba. The unique architecture 
+            reflects the traditional pagoda-style construction prevalent in Himachal Pradesh during the 16th century.
+          </p>
+          <p>
+            Hidimba was a demoness who fell in love with Bhima when the Pandavas were in exile. After marrying Bhima, 
+            she gave birth to Ghatotkacha, who played a crucial role in the Mahabharata war. After Bhima left, 
+            Hidimba meditated in the forests of Manali and eventually attained divinity.
+          </p>
+          <p>
+            The temple has been recognized as an important heritage site and pilgrimage destination. Despite its age, 
+            the wooden structure has been remarkably well-preserved, showcasing the skill of ancient craftsmen. The 
+            temple continues to be an active place of worship and a major tourist attraction in Manali.
+          </p>
+        </div>
+      </div>
+      <div class="view-more-container">
+        <button class="view-more-btn" onclick="toggleContent('history')">View More</button>
+      </div>
+    </section>
+
+    <section id="visit">
+      <h2>Visiting Information</h2>
+      <div class="content-preview" id="visit-content">
+        <p>
+          The Hadimba Temple is located in Manali, Himachal Pradesh, approximately 2 km from the main town. 
+          Nestled amidst dense cedar forests at the foot of the Himalayas, it offers a peaceful and scenic 
+          environment for visitors and devotees alike.
+        </p>
+        <div class="hidden-content" style="display: none;">
+          <p>
+            <strong>Location:</strong> Dhungiri Van Vihar, Manali, Himachal Pradesh 175131. The temple is situated 
+            about 2 kilometers from Manali Mall Road.
+          </p>
+          <p>
+            <strong>How to Reach:</strong>
+          </p>
+          <p>
+            <strong>By Air:</strong> The nearest airport is Bhuntar Airport (Kullu-Manali Airport), approximately 
+            50 km from Manali. Regular taxi services and buses connect the airport to Manali.
+          </p>
+          <p>
+            <strong>By Train:</strong> The nearest major railway station is Joginder Nagar (about 165 km away). 
+            From there, you can hire taxis or take buses to reach Manali.
+          </p>
+          <p>
+            <strong>By Road:</strong> Manali is well-connected by road from major cities. Regular buses run from 
+            Delhi (about 540 km), Chandigarh (310 km), and other nearby cities. Private taxis are also available.
+          </p>
+          <p>
+            <strong>Temple Timings:</strong> The temple is open daily from 8:00 AM to 6:00 PM. However, timings 
+            may vary during winter months due to heavy snowfall.
+          </p>
+          <p>
+            <strong>Best Time to Visit:</strong> April to July (summer) and September to October (autumn) offer 
+            pleasant weather. The temple is also beautiful during winter (December-February) when covered in snow, 
+            though accessibility may be limited.
+          </p>
+          <p>
+            <strong>Entry Fee:</strong> There is no entry fee to visit the temple, though donations are welcome.
+          </p>
+          <p>
+            <strong>Special Events:</strong> The Dhungari Festival held in May is a major attraction, featuring 
+            traditional dances, music, and cultural performances.
+          </p>

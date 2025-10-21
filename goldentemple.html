@@ -1,0 +1,642 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Golden Temple - Amritsar</title>
+  <style>
+    :root {
+      --bg: #0f1724;
+      --card: #0b1220;
+      --muted: #94a3b8;
+      --accent: #2563eb;
+      --header-bg: #1e40af;
+      --radius: 16px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+      background: var(--bg);
+      color: #e6eef8;
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.6;
+    }
+    .container {
+      width: 100vw;
+      margin: 0;
+      padding: 0;
+    }
+    header, section, footer {
+      width: 80%;
+      margin-left: auto;
+      margin-right: auto;
+      box-sizing: border-box;
+    }
+    @media (max-width: 900px) {
+      header, section, footer {
+        width: 98%;
+      }
+    }
+    header {
+      background: linear-gradient(135deg, var(--header-bg), #3b82f6);
+      text-align: center;
+      padding: 40px 20px;
+      border-radius: 0 0 20px 20px;
+      box-shadow: 0 8px 32px rgba(30, 64, 175, 0.3);
+      margin-bottom: 40px;
+    }
+    header h1 {
+      font-size: 60px;
+      font-weight: 700;
+      letter-spacing: -1px;
+      color: white;
+    }
+    header h1 span {
+      color: #fbbf24;
+    }
+    header .subtitle {
+      font-size: 20px;
+      color: #fbbf24;
+      margin-top: 8px;
+      font-style: italic;
+    }
+    nav {
+      margin-top: 18px;
+    }
+    nav a {
+      margin: 0 12px;
+      color: #e6eef8;
+      text-decoration: none;
+      font-size: 18px;
+      transition: color 0.3s ease;
+      padding: 8px 16px;
+      border-radius: 8px;
+    }
+    nav a:hover {
+      color: #fbbf24;
+      background: rgba(255, 255, 255, 0.1);
+    }
+    section {
+      background: var(--card);
+      padding: 28px;
+      border-radius: var(--radius);
+      margin-bottom: 32px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+    }
+    section h2 {
+      font-size: 28px;
+      margin-bottom: 12px;
+      color: var(--accent);
+    }
+    section p {
+      font-size: 18px;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+    .slideshow-container {
+      width: 100%;
+      max-width: 100%;
+      margin: 0 auto 18px auto;
+      position: relative;
+      overflow: hidden;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+      background: #222;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      aspect-ratio: unset;
+      height: auto;
+    }
+    .slides {
+      width: 100%;
+      min-height: 0;
+      height: auto;
+      max-height: 500px;
+      object-fit: contain;
+      display: none;
+      border-radius: 12px;
+    }
+    .slides.active {
+      display: block;
+    }
+    @media (max-width: 900px) {
+      .slideshow-container {
+        height: auto;
+      }
+      .slides {
+        max-height: 260px;
+      }
+    }
+    .slide-indicators {
+      text-align: center;
+      margin-top: 15px;
+    }
+    .dot {
+      cursor: pointer;
+      height: 12px;
+      width: 12px;
+      margin: 0 5px;
+      background-color: #334155;
+      border-radius: 50%;
+      display: inline-block;
+      transition: background-color 0.3s ease;
+    }
+    .dot.active, .dot:hover {
+      background-color: var(--accent);
+    }
+    .gallery-scroll-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      margin-top: 12px;
+      margin-bottom: 18px;
+    }
+    .gallery-btn {
+      background: var(--card);
+      color: var(--accent);
+      border: none;
+      border-radius: 50%;
+      width: 38px;
+      height: 38px;
+      font-size: 22px;
+      cursor: pointer;
+      margin: 0 8px;
+      box-shadow: 0 2px 8px 0 rgba(37,99,235,0.09);
+      transition: background 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .gallery-btn:hover {
+      background: #1746a2;
+      color: #fff;
+    }
+    .gallery {
+      overflow-x: auto;
+      white-space: nowrap;
+      padding-bottom: 8px;
+      scroll-behavior: smooth;
+      width: 100%;
+      max-width: 100%;
+    }
+    .gallery img {
+      display: inline-block;
+      width: 320px;
+      height: 220px;
+      object-fit: cover;
+      border-radius: var(--radius);
+      margin-right: 18px;
+      transition: transform 0.3s;
+      vertical-align: middle;
+    }
+    .gallery img:last-child {
+      margin-right: 0;
+    }
+    .facts ul {
+      list-style: none;
+      width: 100%;
+      max-width: 100%;
+      text-align: left;
+      padding: 0;
+      font-size: 18px;
+    }
+    .facts li {
+      background: rgba(255,255,255,0.07);
+      margin: 12px 0;
+      padding: 18px;
+      border-radius: var(--radius);
+      width: 100%;
+      box-sizing: border-box;
+      display: block;
+    }
+    .memories-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      margin-top: 20px;
+    }
+    .memory-card {
+      background: linear-gradient(135deg, #1e293b, #334155);
+      padding: 20px;
+      border-radius: 12px;
+      border-left: 4px solid var(--accent);
+      transition: transform 0.3s ease;
+      margin-bottom: 8px;
+    }
+    .memory-card:hover {
+      transform: translateY(-2px);
+    }
+    .memory-card h3 {
+      color: #fbbf24;
+      font-size: 18px;
+      margin-bottom: 8px;
+    }
+    .memory-card .memory-text {
+      font-style: italic;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    .memory-card .memory-author {
+      color: var(--accent);
+      font-size: 14px;
+      text-align: right;
+    }
+    .share-form {
+      background: linear-gradient(135deg, #1e293b, #0f172a);
+      padding: 24px;
+      border-radius: 16px;
+      margin-top: 20px;
+      border: 1px solid #334155;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .form-group {
+      margin-bottom: 16px;
+      text-align: left;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--accent);
+      font-weight: 500;
+    }
+    .form-group input, .form-group textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      background: #0f172a;
+      color: #e6eef8;
+      font-size: 16px;
+      transition: border-color 0.3s ease;
+    }
+    .form-group input:focus, .form-group textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+    .file-upload-btn {
+      display: inline-block;
+      padding: 12px 20px;
+      background: var(--accent);
+      color: white;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      margin-bottom: 12px;
+    }
+    .file-upload-btn:hover {
+      background: #d97706;
+    }
+    .file-upload-btn input[type="file"] {
+      display: none;
+    }
+    .submit-btn {
+      background: linear-gradient(135deg, var(--accent), #fbbf24);
+      color: white;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 500;
+      transition: transform 0.2s ease;
+    }
+    .submit-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
+    }
+    .view-more-container {
+      text-align: center;
+      margin-top: 20px;
+    }
+    .view-more-btn {
+      background: linear-gradient(135deg, var(--accent), #3b82f6);
+      color: white;
+      padding: 10px 24px;
+      border: none;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+    }
+    .view-more-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4);
+    }
+    .content-preview .hidden-content {
+      margin-top: 12px;
+    }
+    footer {
+      text-align: center;
+      padding: 20px;
+      color: var(--muted);
+      font-size: 15px;
+      margin-top: 20px;
+    }
+    footer span {
+      color: var(--accent);
+    }
+    @media (max-width: 900px) {
+      header h1 {
+        font-size: 36px;
+      }
+      .slideshow-container {
+        aspect-ratio: 16/9;
+      }
+      .gallery img {
+        width: 180px;
+        height: 120px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Golden <span>Temple</span></h1>
+      <p class="subtitle">Sri Harmandir Sahib - The Abode of God</p>
+      <nav>
+        <a href="#about">About</a>
+        <a href="#gallery">Gallery</a>
+        <a href="#history">History</a>
+        <a href="#visit">Visit Info</a>
+        <a href="#memories">Memories</a>
+      </nav>
+    </header>
+
+    <section id="about">
+      <h2>About the Temple</h2>
+      <p>
+        The Golden Temple, also known as Sri Harmandir Sahib or Darbar Sahib, is the most sacred gurdwara 
+        of the Sikh religion. Located in Amritsar, Punjab, India, its upper floors are covered with 750 kg 
+        of gold, giving it its renowned name. Surrounded by the Amrit Sarovar (holy water tank), believed 
+        to have healing powers, the temple welcomes people of all religions, castes, and backgrounds.
+      </p>
+      <div class="slideshow-container">
+        <img class="slides active" src="https://imgs.search.brave.com/WebU9B_Egvs0cQy9k0-1JesMwvXTapJEklMA_WfizZY/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9ub21h/ZGljcGl4ZWwuY29t/L3dwLWNvbnRlbnQv/dXBsb2Fkcy8yMDIx/LzA5L0luZGlhXzE0/X0p1bmVfQW1yaXRz/YXJfTzAwM19hY3J0/ZG5fbmlrX2xvZ29f/MTE1MC5qcGc" alt="Golden Temple Main View">
+        <img class="slides" src="https://imgs.search.brave.com/uY-VnxAsqLS_n7G5yep6uZRv7sESpa9unw58uOeWWwg/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9pLnBp/bmltZy5jb20vb3Jp/Z2luYWxzL2M4Lzk2/L2VjL2M4OTZlYzI1/MjE0YTU0NTU2NGUx/ZTVjNzYzNzlkNTQ1/LmpwZw" alt="Golden Temple Courtyard">
+        <img class="slides" src="https://imgs.search.brave.com/mU9ZlItbZqPQmfw7lp6_MlhmB1q01TQ6QtD-uBwCOBE/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9pbWFn/ZXMucGV4ZWxzLmNv/bS9waG90b3MvMjg5/MDU1NTAvcGV4ZWxz/LXBob3RvLTI4OTA1/NTUwL2ZyZWUtcGhv/dG8tb2YtZ29sZGVu/LXRlbXBsZS1hbXJp/dHNhci1hdC1zdW5z/ZXQtcmVmbGVjdGlv/bi5qcGVnP2F1dG89/Y29tcHJlc3MmY3M9/dGlueXNyZ2ImZHBy/PTEmdz01MDA" alt="Golden Temple Sunset Reflection">
+        <img class="slides" src="https://imgs.search.brave.com/oSfks3-fpxlIIphIkuufbxKBIlEhwwnxi8jn_FYfGX4/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly91cGxv/YWQud2lraW1lZGlh/Lm9yZy93aWtpcGVk/aWEvY29tbW9ucy8z/LzMzL0dvbGRlbl9U/ZW1wbGVfMi5qcGc" alt="Golden Temple Architecture">
+        <img class="slides" src="https://imgs.search.brave.com/qzfOMqks9y_8M0RP-NBj3TOmb2cSXlS5d256rV8rCvI/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9zYWNy/ZWRzaXRlcy5jb20v/aW1hZ2VzL2FzaWEv/aW5kaWEvcHVuamFi/L0dvbGRlbi1UZW1w/bGUtMS53ZWJw" alt="Golden Temple Night View">
+      </div>
+      <div class="slide-indicators">
+        <span class="dot active" onclick="currentSlide(1)"></span>
+        <span class="dot" onclick="currentSlide(2)"></span>
+        <span class="dot" onclick="currentSlide(3)"></span>
+        <span class="dot" onclick="currentSlide(4)"></span>
+        <span class="dot" onclick="currentSlide(5)"></span>
+      </div>
+    </section>
+
+    <section id="gallery">
+      <h2>Gallery</h2>
+      <p>Explore the divine beauty and architectural magnificence of the Golden Temple through these stunning images.</p>
+      <div class="gallery-scroll-container">
+        <button class="gallery-btn" id="galleryLeft" aria-label="Scroll left">&#8592;</button>
+        <div class="gallery" id="galleryScroll">
+          <img src="https://imgs.search.brave.com/WebU9B_Egvs0cQy9k0-1JesMwvXTapJEklMA_WfizZY/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9ub21h/ZGljcGl4ZWwuY29t/L3dwLWNvbnRlbnQv/dXBsb2Fkcy8yMDIx/LzA5L0luZGlhXzE0/X0p1bmVfQW1yaXRz/YXJfTzAwM19hY3J0/ZG5fbmlrX2xvZ29f/MTE1MC5qcGc" alt="Golden Temple Main View">
+          <img src="https://imgs.search.brave.com/uY-VnxAsqLS_n7G5yep6uZRv7sESpa9unw58uOeWWwg/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9pLnBp/bmltZy5jb20vb3Jp/Z2luYWxzL2M4Lzk2/L2VjL2M4OTZlYzI1/MjE0YTU0NTU2NGUx/ZTVjNzYzNzlkNTQ1/LmpwZw" alt="Golden Temple Courtyard">
+          <img src="https://imgs.search.brave.com/mU9ZlItbZqPQmfw7lp6_MlhmB1q01TQ6QtD-uBwCOBE/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9pbWFn/ZXMucGV4ZWxzLmNv/bS9waG90b3MvMjg5/MDU1NTAvcGV4ZWxz/LXBob3RvLTI4OTA1/NTUwL2ZyZWUtcGhv/dG8tb2YtZ29sZGVu/LXRlbXBsZS1hbXJp/dHNhci1hdC1zdW5z/ZXQtcmVmbGVjdGlv/bi5qcGVnP2F1dG89/Y29tcHJlc3MmY3M9/dGlueXNyZ2ImZHBy/PTEmdz01MDA" alt="Golden Temple Sunset Reflection">
+          <img src="https://imgs.search.brave.com/oSfks3-fpxlIIphIkuufbxKBIlEhwwnxi8jn_FYfGX4/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly91cGxv/YWQud2lraW1lZGlh/Lm9yZy93aWtpcGVk/aWEvY29tbW9ucy8z/LzMzL0dvbGRlbl9U/ZW1wbGVfMi5qcGc" alt="Golden Temple Architecture">
+          <img src="https://imgs.search.brave.com/qzfOMqks9y_8M0RP-NBj3TOmb2cSXlS5d256rV8rCvI/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9zYWNy/ZWRzaXRlcy5jb20v/aW1hZ2VzL2FzaWEv/aW5kaWEvcHVuamFi/L0dvbGRlbi1UZW1w/bGUtMS53ZWJw" alt="Golden Temple Night View">
+          <img src="https://imgs.search.brave.com/J3wO7iSrGGG2swDMmTvo7-WFktXlUDU1irdVqw3oA5I/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly90NC5m/dGNkbi5uZXQvanBn/LzA2LzI1LzI0LzMx/LzM2MF9GXzYyNTI0/MzE4N19hcHh1QXAy/c2RuR3kySmN4azJG/dUVRcWNlQ25RenhN/Uy5qcGc" alt="Temple Devotees">
+          <img src="https://imgs.search.brave.com/GXaGkHBhqksRYPtbTXCC3LvP4S_tAr7P9m4_8GUBwjA/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly93d3cu/Z2xvYmFsLWdhbGxp/dmFudGluZy5jb20v/d3AtY29udGVudC91/cGxvYWRzLzIwMTYv/MDgvSU1HXzIwMTYw/NzMwXzEwMTU0MS0x/MDI0eDg0OS5qcGc" alt="Temple Complex View">
+          <img src="https://imgs.search.brave.com/YNvhAM1O6OuQ8u_Qvho8mibqmH_0e62Wy3CXL7yZw48/rs:fit:0:180:1:0/g:ce/aHR0cHM6Ly9tZWRp/YS5nZXR0eWltYWdl/cy5jb20vaWQvNjY0/NjI3OTI2L3Bob3Rv/L2dvbGRlbi10ZW1w/bGUtYXQtZHVzay1h/bXJpdHNhci1pbmRp/YS5qcGc_cz02MTJ4/NjEyJnc9MCZrPTIw/JmM9LUlESEN4THdN/RnV5MU4xUDRodmJ4/NWY1bGg0dUZ3VlVS/THJUcGRwYUcwRT0" alt="Golden Temple at Dusk">
+          <img src="https://imgs.search.brave.com/dWIAIfedoRX7fqYuZuOaxglSwJkK8C7kN6W6wKbYjgU/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9pbWFn/ZXMucGV4ZWxzLmNv/bS9waG90b3MvMjg5/MDU1NTgvcGV4ZWxz/LXBob3RvLTI4OTA1/NTU4L2ZyZWUtcGhv/dG8tb2YtZ29sZGVu/LXRlbXBsZS1yZWZs/ZWN0ZWQtaW4tYW1y/aXQtc2Fyb3Zhci13/YXRlcnMuanBlZz9h/dXRvPWNvbXByZXNz/JmNzPXRpbnlzcmdi/JmRwcj0xJnc9NTAw" alt="Amrit Sarovar Reflection">
+          <img src="https://imgs.search.brave.com/ya_YeZpW1ZuRQwKHzrF5_d40vLG-P_twKJsdBuFV1c0/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9tZWRp/YS1jZG4udHJpcGFk/dmlzb3IuY29tL21l/ZGlhL3Bob3RvLW8v/MDgvMGYvZjYvMWQv/Z29sZGVuLXRlbXBs/ZS5qcGc" alt="Golden Temple Panorama">
+        </div>
+        <button class="gallery-btn" id="galleryRight" aria-label="Scroll right">&#8594;</button>
+      </div>
+      <div class="view-more-container">
+        <button class="view-more-btn" onclick="viewMoreGallery()">View More</button>
+      </div>
+    </section>
+
+    <section id="facts" class="facts">
+      <h2>Fun Facts</h2>
+      <ul>
+        <li>The Golden Temple receives over 1 lakh (100,000) visitors daily, making it one of the most visited places in the world.</li>
+        <li>It has four entrances in all directions, symbolizing openness and acceptance of people from all walks of life.</li>
+        <li>The upper floors are covered with 750 kg of pure gold, giving the temple its distinctive golden appearance.</li>
+        <li>The temple runs the world's largest free community kitchen (Langar), serving up to 1 lakh people daily regardless of religion, caste, or background.</li>
+        <li>The holy book, Guru Granth Sahib, is ceremoniously carried to the Akal Takht every night and brought back in the morning.</li>
+        <li>The temple complex includes the Akal Takht, the highest seat of Sikh temporal authority.</li>
+        <li>The Amrit Sarovar (holy water tank) surrounding the temple is believed to have healing properties.</li>
+      </ul>
+    </section>
+
+    <section id="history">
+      <h2>History</h2>
+      <div class="content-preview" id="history-content">
+        <p>
+          The Golden Temple was founded in 1581 by Guru Arjan Dev Ji, the 5th Sikh Guru. Construction was 
+          completed in 1604, when the Guru Granth Sahib (the holy scripture) was placed inside for the first time.
+        </p>
+        <div class="hidden-content" style="display: none;">
+          <p>
+            The foundation of the temple was laid by a Muslim saint, Mian Mir, at the request of Guru Arjan Dev Ji, 
+            symbolizing the temple's message of universal brotherhood and religious harmony.
+          </p>
+          <p>
+            In the early 19th century, Maharaja Ranjit Singh, the Sikh ruler of Punjab, rebuilt and beautified 
+            the temple with gold plating, giving it the magnificent appearance we see today. The gold leaf work 
+            was completed between 1830 and 1860.
+          </p>
+          <p>
+            Throughout history, the temple has faced several attacks and reconstructions, but it has always 
+            remained the spiritual and cultural center of Sikhism. The temple stands as a symbol of resilience, 
+            faith, and the eternal message of equality and service to humanity.
+          </p>
+        </div>
+      </div>
+      <div class="view-more-container">
+        <button class="view-more-btn" onclick="toggleContent('history')">View More</button>
+      </div>
+    </section>
+
+    <section id="visit">
+      <h2>Visiting Information</h2>
+      <div class="content-preview" id="visit-content">
+        <p>
+          The Golden Temple is located in Amritsar, Punjab, India. It is well-connected by road, rail, and air, 
+          making it easily accessible for pilgrims from around the world. Entry is free for all, and the temple 
+          welcomes people of all religions, castes, and backgrounds.
+        </p>
+        <div class="hidden-content" style="display: none;">
+          <p>
+            <strong>By Train:</strong> Amritsar Railway Station is well connected to major cities across India 
+            including Delhi, Mumbai, Kolkata, and Chennai. The temple is about 2 km from the station.
+          </p>
+          <p>
+            <strong>By Air:</strong> Sri Guru Ram Dass Jee International Airport is about 11 km from the temple 
+            with regular flights from major Indian cities and some international destinations.
+          </p>
+          <p>
+            <strong>By Road:</strong> Excellent bus services from Delhi (450 km), Chandigarh (230 km), and other 
+            cities. State transport and private buses regularly operate to Amritsar.
+          </p>
+          <p>
+            <strong>Temple Timings:</strong> The temple remains open 24 hours a day, all year round. The best 
+            times to visit are early morning (sunrise) and evening when the temple is beautifully illuminated.
+          </p>
+          <p>
+            <strong>Dress Code:</strong> Covering the head is mandatory for all visitors. Head scarves are 
+            available at the entrance. Remove shoes before entering and maintain modest dress.
+          </p>
+          <p>
+            <strong>Langar (Free Kitchen):</strong> Open to all visitors 24/7. Experience the community dining 
+            where everyone sits together on the floor, symbolizing equality.
+          </p>
+          <p>
+            <strong>Accommodation:</strong> Free accommodation is available at the temple complex on a first-come, 
+            first-served basis. Many hotels and guesthouses are also available nearby for all budgets.
+          </p>
+          <p>
+            <strong>Best Time to Visit:</strong> October to March offers pleasant weather. Morning (sunrise) and 
+            evening (when the temple is illuminated and reflects in the Sarovar) are the most beautiful times.
+          </p>
+        </div>
+      </div>
+      <div class="view-more-container">
+        <button class="view-more-btn" onclick="toggleContent('visit')">View More</button>
+      </div>
+    </section>
+
+    <section id="memories">
+      <h2>Devotee Memories</h2>
+      <p>Read the heartfelt experiences and spiritual journeys shared by visitors to the Golden Temple.</p>
+      <div class="memories-grid">
+        <div class="memory-card">
+          <h3>Spiritual Calmness</h3>
+          <p class="memory-text">"The moment I entered the temple complex, I felt an overwhelming sense of peace. The golden reflection in the Sarovar at sunrise was absolutely divine. This place truly touches your soul."</p>
+          <p class="memory-author">- Amandeep Singh, Ludhiana</p>
+        </div>
+        <div class="memory-card">
+          <h3>Unity in Diversity</h3>
+          <p class="memory-text">"Sitting in the Langar hall, eating with people from all religions and backgrounds, I truly understood the meaning of equality. The Golden Temple teaches us that we are all one."</p>
+          <p class="memory-author">- Meera Reddy, Hyderabad</p>
+        </div>
+        <div class="memory-card">
+          <h3>Unforgettable Night View</h3>
+          <p class="memory-text">"The nighttime view when the temple glitters under the lights and reflects in the holy Sarovar is something I will never forget. It's a sight that stays with you forever."</p>
+          <p class="memory-author">- Rahul Kapoor, Delhi</p>
+        </div>
+      </div>
+      <div class="view-more-container">
+        <button class="view-more-btn" onclick="viewMoreMemories()">View More</button>
+      </div>
+      <div class="share-form">
+        <h3 style="color: #fbbf24; margin-bottom: 16px; text-align: center;">Share Your Memory</h3>
+        <form>
+          <div class="form-group">
+            <label for="name">Your Name</label>
+            <input type="text" id="name" name="name" placeholder="Enter your full name">
+          </div>
+          <div class="form-group">
+            <label for="city">City</label>
+            <input type="text" id="city" name="city" placeholder="Your city">
+          </div>
+          <div class="form-group">
+            <label for="memory">Share Your Experience</label>
+            <textarea id="memory" name="memory" rows="4" placeholder="Describe your spiritual experience at the Golden Temple..."></textarea>
+          </div>
+          <div class="form-group">
+            <label class="file-upload-btn">
+              📸 Add Photo (Optional)
+              <input type="file" accept="image/*">
+            </label>
+          </div>
+          <button type="submit" class="submit-btn">Share My Memory</button>
+        </form>
+      </div>
+    </section>
+
+    <footer>
+      © 2025 <span>Sri Harmandir Sahib</span> — All Rights Reserved.
+    </footer>
+  </div>
+  <script>
+    // Slideshow
+    let slideIndex = 0;
+    const slides = document.querySelectorAll('.slides');
+    const dots = document.querySelectorAll('.dot');
+    function showSlide(index) {
+      slides.forEach(slide => slide.classList.remove('active'));
+      dots.forEach(dot => dot.classList.remove('active'));
+      slides[index].classList.add('active');
+      dots[index].classList.add('active');
+    }
+    function nextSlide() {
+      slideIndex = (slideIndex + 1) % slides.length;
+      showSlide(slideIndex);
+    }
+    function currentSlide(index) {
+      slideIndex = index - 1;
+      showSlide(slideIndex);
+    }
+    setInterval(nextSlide, 4000);
+
+    // Gallery scroll buttons
+    document.getElementById('galleryLeft').onclick = function() {
+      document.getElementById('galleryScroll').scrollBy({left: -340, behavior: 'smooth'});
+    };
+    document.getElementById('galleryRight').onclick = function() {
+      document.getElementById('galleryScroll').scrollBy({left: 340, behavior: 'smooth'});
+    };
+
+    // View More functionality
+    function toggleContent(section) {
+      const content = document.getElementById(section + '-content');
+      const hiddenContent = content.querySelector('.hidden-content');
+      const button = content.parentElement.querySelector('.view-more-btn');
+      if (hiddenContent.style.display === 'none' || hiddenContent.style.display === '') {
+        hiddenContent.style.display = 'block';
+        button.textContent = 'View Less';
+      } else {
+        hiddenContent.style.display = 'none';
+        button.textContent = 'View More';
+      }
+    }
+    function viewMoreGallery() {
+      alert('More gallery images coming soon! Visit the Golden Temple in person to experience its divine beauty.');
+    }
+    function viewMoreMemories() {
+      const memoriesGrid = document.querySelector('.memories-grid');
+      const additionalMemories = [
+        {
+          title: "Healing Waters",
+          text: "I took a dip in the Amrit Sarovar and felt a sense of spiritual cleansing. The experience was truly transformative and filled me with positive energy.",
+          author: "Jaspreet Kaur, Chandigarh"
+        },
+        {
+          title: "Volunteer Experience",
+          text: "Serving in the Langar kitchen was one of the most humbling experiences of my life. Preparing food for thousands taught me the true meaning of seva (selfless service).",
+          author: "Ravi Patel, Ahmedabad"
+        }
+      ];
+      additionalMemories.forEach(memory => {
+        const memoryCard = document.createElement('div');
+        memoryCard.className = 'memory-card';
+        memoryCard.innerHTML = `
+          <h3>${memory.title}</h3>
+          <p class="memory-text">"${memory.text}"</p>
+          <p class="memory-author">- ${memory.author}</p>
+        `;
+        memoriesGrid.appendChild(memoryCard);
+      });
+      document.querySelector('#memories .view-more-btn').style.display = 'none';
+    }
+    // Form submission handler
+    document.querySelector('.share-form form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      alert('Thank you for sharing your memory! Your experience will be reviewed and added to our memories section.');
+      this.reset();
+    });
+  </script>
+</body>
+</html>
